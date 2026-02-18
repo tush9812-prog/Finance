@@ -1,0 +1,130 @@
+{% extends "base.html" %} {% block title %}{{ symbol }} - Live Chart{% endblock
+%} {% block styles %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/base.css') }}"
+/>
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/stock.css') }}"
+/>
+<!-- TradingView Lightweight Charts (Yahoo style) -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.css"
+/>
+{% endblock %} {% block content %}
+<div class="stock-page">
+  <!-- Header (Yahoo style) -->
+  <div class="stock-header">
+    <div class="symbol-info">
+      <h1>{{ symbol }}</h1>
+      <span class="market-status">Live • USD</span>
+    </div>
+    {{stock.details.info.get("fullExchangeName", "N/A")}}
+     {{stock.details.info.get("longName", "N/A")}}
+      {{stock.details.info.get("currency", "N/A")}}
+    <!-- Price + Change -->
+    {% set latest = stock.details.price[-1] if stock.details.price %}
+    <div class="price-section">
+      <div class="current-price">${{ "%.2f"|format(latest.Close|float) }}</div>
+      {% if stock.details.price|length > 1 %} {% set prev =
+      stock.details.price[-2] %} {% set change = latest.Close - prev.Close %} {%
+      set change_pct = (change / prev.Close * 100) %}
+      <div
+        class="change {% if change > 0 %}positive{% else %}negative{% endif %}"
+      >
+        {{ "%.2f"|format(change) }} ({{ "%.2f"|format(change_pct) }}%)
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Chart Container (Yahoo height/style) -->
+  <div
+    id="tradingview_chart"
+    style="width: 100%; height: 60vh; margin-bottom: 20px"
+  ></div>
+
+  <!-- News/Stats below chart -->
+  <div class="stock-details">
+    <div class="news-preview">
+      <h3>News</h3>
+      <!-- Add news here -->
+    </div>
+    <div class="stats">
+      <div>
+        Previous Close: {{ "%.2f"|format(stock.details.price[-2].Close|float) if
+        stock.details.price|length > 1 }}
+      </div>
+      <div>
+        Volume: {{ "{:,}".format(stock.details.price[-1].Volume|default(0)|int)
+        }}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block scripts %}
+<!-- TradingView Lightweight Charts -->
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+  
+document.addEventListener('DOMContentLoaded', () => {
+  const chartData = {{ stock.chart_data | tojson | safe }};
+  const container = document.getElementById('tradingview_chart');
+
+  const chart = LightweightCharts.createChart(container, {
+    width: container.clientWidth,
+    height: container.clientHeight,
+    layout: {
+      background: { color: '#000000' },
+      textColor: '#FFFFFF',
+    },
+    grid: {
+      vertLines: { visible: false },
+      horzLines: { color: '#2A2E39' }
+    },
+    rightPriceScale: {
+      borderColor: '#2A2E39'
+    },
+    timeScale: {
+      borderColor: '#2A2E39',
+      timeVisible: true
+    }
+  });
+
+  // ✅ v5 way
+  const candlestickSeries = chart.addSeries(
+    LightweightCharts.CandlestickSeries,
+    {
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350'
+    }
+  );
+
+  const candles = chartData.labels.map((date, i) => ({
+    time: Math.floor(new Date(date).getTime() / 1000), // correct timestamp
+    open: Number(chartData.open[i]),
+    high: Number(chartData.high[i]),
+    low: Number(chartData.low[i]),
+    close: Number(chartData.close[i])
+  }));
+
+  candlestickSeries.setData(candles);
+  chart.timeScale().fitContent();
+
+  // Responsive resize
+  window.addEventListener('resize', () => {
+    chart.applyOptions({
+      width: container.clientWidth,
+      height: container.clientHeight
+    });
+  });
+});
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,490 @@
+body {
+  background-color: black;
+  color: white;
+  font-family: "GT America", Arial, sans-serif;
+  font-size: 12px;
+  padding: 8px 16px;
+}
+
+.body-page{
+  display: flex;
+  flex-direction: column;
+}
+.navbar{
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 2px;
+  top:80px;
+  width: 280px;
+  
+  gap: 22px; /* Consistent spacing between items */
+  padding: 16px; /* Internal padding */
+  
+  /* Optional: Center children horizontally */
+}
+.navbar-hr{
+  width: 4px;
+}
+.news-divider {
+    border:  solid rgb(57, 60, 57);
+  width: 0px;
+  height: 1800px;
+  /* position: relative; */
+  /* top:-12px; */
+  /* right: -14px; */
+}
+
+
+
+li {
+  font-weight: 4px;
+}
+
+.sidebar {
+  color: white !important;
+  width: 241px;
+  margin: 20px;
+  padding: 8px;
+  background-color: #1a1a1a;
+  position: absolute;
+  top: 20px;
+  
+}
+
+.sidebar h2,
+.sidebar a {
+  color: white !important;
+  text-decoration: none;
+}
+
+.sidebar a:hover {
+  color: #2b5f50 !important;
+  /* Light gray on hover */
+}
+
+.bar-header {
+  display: flex;
+  flex-direction: row;
+  height: 48px;
+  width: 100%;
+  align-items: center;
+  gap: 20px;
+}
+@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
+.bar-header h2 {
+  flex-shrink: 0;
+  margin: 0;
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+/* yahoo-search.css - Perfect Yahoo Finance search bar */
+
+.siderbar-header {
+  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Nuclear option - ZERO space between spans */
+
+.no-space-span {
+  font-size: inherit;
+  word-spacing: -3px !important; /* Negative word spacing */
+  letter-spacing: -1px !important;
+}
+
+.no-space-span span {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline !important;
+  font-size: inherit;
+}
+
+.title-initial{
+  color: #0078ff;
+}
+
+/* Remove ALL whitespace rendering */
+.no-space-span span:before {
+  content: '';
+  margin-left: -2px;
+}
+
+
+
+.search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: #d9d9d9;
+  font-size: 16px;
+  padding: 8px 0;
+  height: 28px;
+}
+
+.search-input::placeholder {
+  color: #868686;
+}
+
+.search-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: #0078ff;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.search-btn:hover {
+  background: #0066cc;
+  transform: scale(1.05);
+}
+
+.search-btn:active {
+  transform: scale(0.98);
+}
+
+.search-icon {
+  width: 18px;
+  height: 18px;
+  fill: white;
+  pointer-events: none;
+}
+
+.yahoo-search-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.yahoo-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #1a1a1a;
+  border: 1px solid #303030;
+  border-radius: 24px;
+  padding: 4px;
+  height: 34px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.yahoo-search-box:focus-within {
+  border-color: #00C851;
+  box-shadow: 0 0 0 3px rgba(0,200,81,0.1);
+}
+
+#queryInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #e3e3e3;
+  font-size: 15px;
+  padding: 8px 16px;
+  outline: none;
+  caret-color: #00C851;
+}
+
+.search-btn {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: #00C851;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  flex-shrink: 0;
+}
+
+.search-btn:hover {
+  transform: scale(1.05);
+}
+
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+main{
+  display: flex;
+  flex-direction: column;
+}
+
+.main-body {
+  /* width: calc(100% - 200px); */
+  display: flex;
+  /* flex-direction: column; */
+} 
+
+.divider {
+  border: 1.4px solid rgb(86, 138, 86);
+  /* height: 1px; */
+  /* background-color: #2A2E39; */
+  /* margin: 20px 0; */
+  width: 100%;
+  position: relative;
+  /* top: -10px; */
+}
+
+.news-button{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.news-page-button {
+  background-color: #1a1a1a;
+  border: none !important;
+  color: #f574ee;
+  border-radius: 50% !important;
+
+}
+
+.news-page-button * {
+  border-radius: inherit; /* Inherit to SVG */
+}
+
+.news-page-button:hover {
+  transform: scale(1.05);
+  /* background: #818ff2; */
+  
+  /* Circular boundary/glow */
+  box-shadow: 
+    0 0 0 1px rgb(245, 241, 244),
+    0 0px 1px rgb(248, 244, 248);
+
+}
+
+.news-page-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #00C851;
+}
+/* Update stock-table.css - add container with exact dimensions */
+
+/* Responsive table-container - scrollable under 620px */
+
+.table-container {
+  width: 606px;
+  height: 1037px;
+  max-width: 100%; /* Never exceed viewport */
+  overflow-y: auto;
+  overflow-x: hidden;
+  color: #e3e3e3;
+  font-family: "GT America", Arial, sans-serif;
+  background-color: #050505;
+  border-left: 1px solid #141414;
+  border: 1px solid #2a2e39;
+  position: relative;
+  top: 14px;
+  left: 8px;
+  /* Responsive behavior */
+ /* Minimum height on mobile */
+}
+
+/* Under 620px - full viewport width + horizontal scroll */
+@media (max-width: 948px) and (min-width:625px) {
+  .table-container {
+    width: 58vw !important; /* Full viewport width */
+    height: 100vh; /* Full viewport height */
+    max-width: none;
+    border-radius: 0; /* Edge-to-edge */
+    border-left: none; /* Remove side border on mobile */
+    
+    /* Enable horizontal scroll for table */
+    overflow-x: auto !important;
+    /* overflow-y: auto; */
+    
+    /* Sticky header on scroll */
+    border-top: 1px solid #2a2e39;
+  }
+}
+
+/* Tablet - intermediate */
+
+
+.table-container::-webkit-scrollbar {
+  width: 6px; /* Thin scrollbar */
+  height: 6px;
+}
+
+.table-container::-webkit-scrollbar-track {
+  background: #f1a7a700; /* Dark track */
+  border-radius: 3px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+  background: #000000; /* Pure black thumb */
+  border-radius: 3px;
+  border: none;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+  background: #333333; /* Slightly lighter on hover */
+}
+
+
+.table-container .stock-table {
+  width: 100%;
+  height: 100%;
+  border-collapse: collapse;
+   scrollbar-width: thin;
+  scrollbar-color: #000000 #1a1a1a;
+}
+
+/* Rest of table styles remain same */
+.table-container .stock-table thead th {
+  font-weight: 500;
+  text-align: left;
+  border-bottom: 1px solid #2a2e39;
+  border-top: 1px solid #2a2e39;
+  border-right: 1px solid #2a2e39;
+}
+
+.table-container .stock-table tbody td {
+  border-bottom: 1px solid #2a2e39;
+}
+
+/* Hover */
+.table-container .stock-table tbody tr:hover {
+  background-color: #151515;
+}
+
+
+/* stock-table.css */
+.stock-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "GT America", Arial, sans-serif;
+  color: #E3E3E3;
+}
+
+/* Header row like screenshot */
+.stock-table thead {
+  background-color: #000000;
+}
+
+.stock-table thead th {
+  padding: 0px 8px;
+  font-size: 12px;
+  text-align: left;
+  border-bottom: 1px solid #2a2e39;
+  color: #E3E3E3;
+}
+
+/* Body rows */
+.stock-table tbody tr {
+  background-color: #050505;
+}
+
+.stock-table tbody tr:nth-child(even) {
+  background-color: #0b0b0b;
+}
+
+.stock-table tbody td {
+  padding: 0px 8px;
+  font-size: 14px;
+}
+
+/* Hover row */
+.stock-table tbody tr:hover {
+  background-color: #151515;
+}
+
+/* Numeric cells right aligned */
+.stock-table td.num,
+.stock-table th.num {
+  text-align: right;
+}
+
+/* Optional: subtle divider on left side */
+.stock-table {
+  border-left: 1px solid #141414;
+}
+
+
+/* Add vertical border after 1st column - update stock-table.css */
+
+.table-container .stock-table th:nth-child(1),
+.table-container .stock-table td:nth-child(1) {
+  /* First column - no right border */
+  border-right: none !important;
+}
+
+.table-container .stock-table th:nth-child(1) a,
+.table-container .stock-table td:nth-child(1) a,
+.table-container .stock-table th:nth-child(1) a:link,
+.table-container .stock-table td:nth-child(1) a:link,
+.table-container .stock-table th:nth-child(1) a:visited,
+.table-container .stock-table td:nth-child(1) a:visited,
+.table-container .stock-table th:nth-child(1) a:hover,
+.table-container .stock-table td:nth-child(1) a:hover,
+.table-container .stock-table td:nth-child(1) a:active {
+  width: 28px;
+   height: 18px;
+  color: #9FD7FF !important;
+  text-decoration: none;
+}
+
+
+.table-container .stock-table th:nth-child(2),
+.table-container .stock-table td:nth-child(2) {
+  /* Second column onwards - subtle vertical divider after 1st col */
+  border-left: 1px solid #2a2e39;
+   /* Extra padding after divider */
+}
+
+/* Alternative: Single vertical line exactly after 1st column */
+.table-container .stock-table th:nth-child(1),
+.table-container .stock-table td:nth-child(1) {
+  position: relative;
+}
+
+.table-container .stock-table th:nth-child(1)::after,
+.table-container .stock-table td:nth-child(1)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #2a2e39; /* Vertical divider color */
+  z-index: 1;
+}
+
+@media (max-width: 805px) {
+  .news-divider{
+    display: none !important;
+  }
+  .sidebar{
+    display: none !important;
+  }
+   .table-container {
+    width: 100% !important; /* Full width */
+    max-width: 480px !important; /* Cap at 480px */
+    height: 100vh;
+    margin: 0 auto; /* Center if viewport > 480px */
+  }
+  
+  .stock-table {
+    width: 100% !important; /* Fill container */
+    min-width: 480px !important; /* Force horizontal scroll */
+    table-layout: fixed; /* Prevent column shrinking */
+  }
+  
+  /* Column flexibility */
+  .stock-table th,
+  .stock-table td {
+    min-width: 80px; /* Minimum column size */
+  }
+}

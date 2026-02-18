@@ -1,0 +1,17 @@
+{
+  "[html]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": "vscode.html-language-features"
+  },
+  "[jinja-html]": {
+    "editor.formatOnSave": false,
+    "editor.defaultFormatter": null
+  },
+  "files.associations": {
+    "*.html": "html",
+    "templates/*": "jinja-html"
+  },
+  "emmet.includeLanguages": {
+    "jinja-html": "html"
+  }
+}

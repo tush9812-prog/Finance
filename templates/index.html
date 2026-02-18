@@ -1,0 +1,49 @@
+{%extends "base.html"%} {% block title %}Stock Info{% endblock %} {% block
+styles %}
+
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/index.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="page">
+  <div>Markets Overview World Indices</div>
+
+</div>
+{% endblock %} {% block scripts %}
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script>
+  const socket = io();
+  let subscribedSymbols = [];
+
+  document.getElementById("stockForm").addEventListener("submit", function (e) {
+    e.preventDefault(); // No page reload
+    const query = document
+      .getElementById("queryInput")
+      .value.toUpperCase()
+      .trim();
+    if (!query || subscribedSymbols.includes(query)) return;
+
+    // Pure SocketIO: Subscribe directly
+    socket.emit("subscribe", { symbols: [query] });
+    subscribedSymbols.push(query);
+
+    // Add UI
+    document.getElementById("livePrices").innerHTML +=
+      `<div id="${query}"><strong>${query}:</strong> Waiting for data...</div>`;
+
+    // Clear input
+    document.getElementById("queryInput").value = "";
+  });
+
+  socket.on("price_update", function (data) {
+    console.log("🔔 UI GOT:", data);
+    const div = document.getElementById(data.id);
+    if (div) {
+      const changeClass = data.change > 0 ? "green" : "red";
+      div.innerHTML = `<strong>${data.id}:</strong> $${data.price} 
+                     <span class="${changeClass}">(${data.change_percent?.toFixed(2)}%)</span>`;
+    }
+  });
+</script>
+{% endblock %}

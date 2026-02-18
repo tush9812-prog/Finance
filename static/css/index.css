@@ -1,0 +1,16 @@
+
+
+.page {
+  display: flex;
+  flex-direction: column;
+}
+
+
+
+.news_page_button {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+}
+
