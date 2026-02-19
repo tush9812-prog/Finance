@@ -1,18 +1,9 @@
 {% extends "base.html" %} {% block title %}{{ symbol }} - Live Chart{% endblock
 %} {% block styles %}
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/base.css') }}"
-/>
-<link
-  rel="stylesheet"
-  href="{{ url_for('static', filename='css/stock.css') }}"
-/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stock.css') }}" />
 <!-- TradingView Lightweight Charts (Yahoo style) -->
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.css"
-/>
+<link rel="stylesheet" href="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.css" />
 {% endblock %} {% block content %}
 <div class="stock-page">
   <!-- Header (Yahoo style) -->
@@ -21,9 +12,13 @@
       <h1>{{ symbol }}</h1>
       <span class="market-status">Live • USD</span>
     </div>
-    {{stock.details.info.get("fullExchangeName", "N/A")}}
-     {{stock.details.info.get("longName", "N/A")}}
-      {{stock.details.info.get("currency", "N/A")}}
+    {{stock.details.info.get("fullExchangeName", "")}}
+    {{stock.details.info.get("quoteSourceName","")}}
+    {{stock.details.info.get("currency", "")}}
+
+    {{stock.details.info.get("longName", "")}}
+    {{stock.details.info.get("currentPrice","")}}
+    <!-- {{stock.details.info}} -->
     <!-- Price + Change -->
     {% set latest = stock.details.price[-1] if stock.details.price %}
     <div class="price-section">
@@ -31,9 +26,7 @@
       {% if stock.details.price|length > 1 %} {% set prev =
       stock.details.price[-2] %} {% set change = latest.Close - prev.Close %} {%
       set change_pct = (change / prev.Close * 100) %}
-      <div
-        class="change {% if change > 0 %}positive{% else %}negative{% endif %}"
-      >
+      <div class="change {% if change > 0 %}positive{% else %}negative{% endif %}">
         {{ "%.2f"|format(change) }} ({{ "%.2f"|format(change_pct) }}%)
       </div>
       {% endif %}
@@ -41,26 +34,174 @@
   </div>
 
   <!-- Chart Container (Yahoo height/style) -->
-  <div
-    id="tradingview_chart"
-    style="width: 100%; height: 60vh; margin-bottom: 20px"
-  ></div>
+  <div id="tradingview_chart" style="width: 100%; height: 60vh; margin-bottom: 20px"></div>
 
   <!-- News/Stats below chart -->
-  <div class="stock-details">
-    <div class="news-preview">
-      <h3>News</h3>
-      <!-- Add news here -->
+  <div class="stats">
+
+    <div>
+      Open:
+      {{ "%.2f"|format(stock.details.price[-1].Open|float)
+      if stock.details.price|length > 0 }}
     </div>
-    <div class="stats">
-      <div>
-        Previous Close: {{ "%.2f"|format(stock.details.price[-2].Close|float) if
-        stock.details.price|length > 1 }}
-      </div>
-      <div>
-        Volume: {{ "{:,}".format(stock.details.price[-1].Volume|default(0)|int)
-        }}
-      </div>
+
+    <div>
+      Bid:
+      {{ "%.2f"|format(stock.details.info.bid|float)
+      if stock.details.info.bid }}
+    </div>
+
+    <div>
+      Ask:
+      {{ "%.2f"|format(stock.details.info.ask|float)
+      if stock.details.info.ask }}
+    </div>
+
+    <div>
+      52 Week Range:
+      {{ "%.2f"|format(stock.details.info.fiftyTwoWeekLow|float)
+      if stock.details.info.fiftyTwoWeekLow }}
+      -
+      {{ "%.2f"|format(stock.details.info.fiftyTwoWeekHigh|float)
+      if stock.details.info.fiftyTwoWeekHigh }}
+    </div>
+    <div>
+      Previous Close: {{ "%.2f"|format(stock.details.price[-2].Close|float) if
+      stock.details.price|length > 1 }}
+    </div>
+
+
+
+    {% if stock.details.price|length > 0 %}
+    <div class="stat-item">
+      <span class="stat-label">Day's Range:</span>
+      <span class="stat-value">
+        {{ "%.2f"|format(stock.details.price[-1].Low|float) }}
+        -
+        {{ "%.2f"|format(stock.details.price[-1].High|float) }}
+      </span>
+    </div>
+    {% endif %}
+
+
+    {% if stock.details.info.regularMarketVolume %}
+    <div>
+      {{stock.details.info.regularMarketVolume}}
+
+
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.averageVolume %}
+    <div>
+      {{stock.details.info.averageVolume}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.marketCap %}
+    <div>
+      {{stock.details.info.marketCap}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.beta %}
+    <div>
+      {{stock.details.info.beta}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.trailingPE %}
+    <div>
+      {{stock.details.info.trailingPE}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.trailingEps %}
+    <div>
+      {{stock.details.info.trailingEps}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.earningsTimestamp %}
+    <div>
+      {{stock.details.info.earningsTimestamp | datetimeformat}}
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.trailingAnnualDividendRate %}
+    <div>
+      <span>
+        {{stock.details.info.trailingAnnualDividendRate}}
+
+      </span>
+
+      {% if stock.details.info.trailingAnnualDividendYield %}
+      <span>
+        {{stock.details.info.trailingAnnualDividendYield}}
+      </span>
+      {% endif %}
+
+
+    </div>
+    {% endif %}
+
+    {% if stock.details.info.lastDividendDate %}
+    <div>
+      Last Dividend Date:
+      {{ stock.details.info.lastDividendDate | datetimeformat }}
+    </div>
+    {% endif %}
+
+
+    {% if stock.details.info.targetMeanPrice %}
+    <div>
+      {{stock.details.info.targetMeanPrice}}
+    </div>
+    {% endif %}
+
+    <!-- {% if stock.details.info.averageVolume%}}
+        <div>
+          
+        </div>
+        {% endif %}
+
+        {% if stock.details.info.averageVolume%}}
+        <div>
+          
+        </div>
+        {% endif %}
+
+        {% if stock.details.info.averageVolume%}}
+        <div>
+          {}
+        </div>
+        {% endif %}
+
+        {% if stock.details.info.averageVolume%}}
+        <div>
+          
+        </div>
+        {% endif %}
+
+        {% if stock.details.info.averageVolume%}}
+        <div>
+          
+        </div>
+        {% endif %} -->
+
+  </div>
+
+  <div class="stock-overview">
+    <button class="expand-btn" data-name="{{ stock.details.info.get('longName','') }}"
+      data-industry="{{ stock.details.info.get('industry','') }}"
+      data-sector="{{ stock.details.info.get('sector','') }}">
+      ▼ {{stock.details.info.get("longName", "")}} Overview - {{stock.details.info.get("industry", "")}} /
+      {{stock.details.info.get("sector", "")}}
+    </button>
+
+    <div class="expand-content">
+      <p>This is hidden content.</p>
+      <p>More stock details here...</p>
     </div>
   </div>
 </div>
@@ -68,62 +209,106 @@
 <!-- TradingView Lightweight Charts -->
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script>
-  
-document.addEventListener('DOMContentLoaded', () => {
-  const chartData = {{ stock.chart_data | tojson | safe }};
-  const container = document.getElementById('tradingview_chart');
 
-  const chart = LightweightCharts.createChart(container, {
-    width: container.clientWidth,
-    height: container.clientHeight,
-    layout: {
-      background: { color: '#000000' },
-      textColor: '#FFFFFF',
-    },
-    grid: {
-      vertLines: { visible: false },
-      horzLines: { color: '#2A2E39' }
-    },
-    rightPriceScale: {
-      borderColor: '#2A2E39'
-    },
-    timeScale: {
-      borderColor: '#2A2E39',
-      timeVisible: true
+  document.addEventListener('DOMContentLoaded', () => {
+
+
+    const chartData = JSON.parse('{{ stock.chart_data | tojson | safe }}');
+
+    const container = document.getElementById('tradingview_chart');
+
+    if (!chartData || !chartData.labels || chartData.labels.length === 0) {
+      console.warn("No chart data available");
+      return;
     }
-  });
 
-  // ✅ v5 way
-  const candlestickSeries = chart.addSeries(
-    LightweightCharts.CandlestickSeries,
-    {
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderVisible: false,
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350'
-    }
-  );
+    const chart = LightweightCharts.createChart(container, {
+      width: container.offsetWidth,
+      height: container.offsetHeight || 500,
+      layout: {
+        background: { color: '#000000' },
+        textColor: '#FFFFFF',
+      },
+      grid: {
+        vertLines: { visible: false },
+        horzLines: { color: '#2A2E39' }
+      },
+      rightPriceScale: {
+        borderColor: '#2A2E39'
+      },
+      timeScale: {
+        borderColor: '#2A2E39',
+        timeVisible: true
+      }
+    });
 
-  const candles = chartData.labels.map((date, i) => ({
-    time: Math.floor(new Date(date).getTime() / 1000), // correct timestamp
-    open: Number(chartData.open[i]),
-    high: Number(chartData.high[i]),
-    low: Number(chartData.low[i]),
-    close: Number(chartData.close[i])
-  }));
+    const candlestickSeries = chart.addSeries(
+      LightweightCharts.CandlestickSeries,
+      {
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderVisible: false,
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350'
+      }
+    );
 
-  candlestickSeries.setData(candles);
-  chart.timeScale().fitContent();
+    const candles = chartData.labels.map((date, i) => ({
+      time: Math.floor(new Date(date).getTime() / 1000),
+      open: Number(chartData.open[i]),
+      high: Number(chartData.high[i]),
+      low: Number(chartData.low[i]),
+      close: Number(chartData.close[i])
+    }));
 
-  // Responsive resize
-  window.addEventListener('resize', () => {
-    chart.applyOptions({
-      width: container.clientWidth,
-      height: container.clientHeight
+    candlestickSeries.setData(candles);
+    chart.timeScale().fitContent();
+
+    window.addEventListener('resize', () => {
+      chart.applyOptions({
+        width: container.offsetWidth,
+        height: container.offsetHeight || 500
+      });
     });
   });
-});
+
+
+
+  //Expand Overview
+  document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll(".expand-btn").forEach(button => {
+
+      button.addEventListener("click", function () {
+
+        const content = this.nextElementSibling;
+
+        if (!content) return;
+
+        content.classList.toggle("active");
+
+        const longName = button.dataset.name;
+        const industry = button.dataset.industry;
+        const sector = button.dataset.sector;
+        const buttonContent =
+          "▼ " + longName + " Overview - " + industry + " / " + sector;
+
+        const buttonContentOnActive =
+          "▲ " + longName + " Overview";
+        this.textContent = content.classList.contains("active")
+          ? buttonContentOnActive
+          : buttonContent;
+
+
+      });
+
+    });
+
+  });
+
+
+
+
 </script>
 
 

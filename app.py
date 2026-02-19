@@ -4,6 +4,8 @@ from flask_socketio import SocketIO, emit
 from stockstrending import stocks_trending
 from webSocketForPriceStream import stock_webSocket
 import yfinance as yf
+from datetime import datetime, timezone
+
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
@@ -76,6 +78,13 @@ def handle_subscribe(data):
 @socketio.on("connect")
 def handle_connect():
     emit("status", {"msg": "Connected to live prices"})
+
+
+@app.template_filter("datetimeformat")
+def datetimeformat(value):
+    if not value:
+        return ""
+    return datetime.fromtimestamp(value, timezone.utc).strftime("%b %d, %Y")
 
 
 if __name__ == "__main__":

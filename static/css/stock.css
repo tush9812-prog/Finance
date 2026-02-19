@@ -1,1 +1,21 @@
 canvas + div { display: none; }
+
+.stock-page{
+  width: 60vw;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;   /* spacing between items */
+}
+
+.expand-content {
+  display: none;
+}
+
+.expand-content.active {
+  display: block;
+}
+
+
