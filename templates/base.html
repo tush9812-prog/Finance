@@ -18,8 +18,11 @@
       <div class="bar-header-title">
         <h2>
           <span class="no-space-span">
-            <span class="title-initial">Fin</span>
-            <span>ance</span>
+            <a href="/">
+              <span class="title-initial">Fin</span>
+              <span style="color: white;">ance</span>
+            </a>
+
           </span>
         </h2>
       </div>
@@ -45,6 +48,17 @@
 
         <div id="livePrices"></div>
       </div>
+
+      <!-- <div id="clock" class="header-clock"></div> -->
+      <div class="date-time-container">
+        <div class="header-clock">
+          <span id="clock-date" class="clock-date"></span>
+          <span id="clock-time" class="clock-time"></span>
+        </div>
+        <!-- Hidden date picker -->
+        <input type="date" id="date-picker" class="hidden-date-picker">
+      </div>
+
       <!-- <button>🔔</button> -->
     </div>
     <hr class="divider" />
@@ -132,6 +146,29 @@
     document.addEventListener('DOMContentLoaded', () => {
       const country = document.getElementById('news_country').value
       loadNews(country, currentNewsPage)
+
+      const dateEl = document.getElementById('clock-date');
+      const picker = document.getElementById('date-picker');
+
+      if (dateEl && picker) {
+        dateEl.addEventListener('click', () => {
+          picker.showPicker?.() || picker.focus(); // Modern browsers
+        });
+
+        picker.addEventListener('change', () => {
+          const selected = picker.valueAsDate;
+          if (selected) {
+            dateEl.textContent = selected.toLocaleDateString('en-US', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric'
+            });
+          }
+        });
+      }
+
+      updateDateTime();
+      setInterval(updateDateTime, 1000);
     })
     function loadNews(country, page) {
 
@@ -198,6 +235,33 @@
         // Clear input
         document.getElementById("queryInput").value = "";
       });
+
+    function updateDateTime() {
+      const dateEl = document.getElementById('clock-date');
+      const timeEl = document.getElementById('clock-time');
+      const picker = document.getElementById('date-picker');
+
+      if (!dateEl || !timeEl || !picker) return;
+
+      const now = new Date();
+
+      // Date: "Sat Feb 21" (matches your screenshot)
+      dateEl.textContent = now.toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric'
+      });
+
+      // Time: "8:04 PM" or 24h format
+      timeEl.textContent = now.toLocaleTimeString('en-US', {
+        hour: 'numeric',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      });
+
+      picker.valueAsDate = now;
+    }
   </script>
   {% block scripts %} {% endblock %}
 </body>
