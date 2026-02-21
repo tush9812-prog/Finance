@@ -110,45 +110,82 @@
           </select>
         </div>
 
-        <ul>
-          {% for news_item in news[news_page * news_per_page : (news_page + 1) *
-          news_per_page] %}
+        <ul id="newsList">
+          {% for news_item in news %}
           <li><a href="{{ news_item.link }}">{{ news_item.title }}</a></li>
           {% endfor %}
         </ul>
         <div class="news-button">
-          <button class="news-page-button" onclick="newsPage({{ news_page - 1 }}, {{ news }})">
+          <button class="news-page-button" onclick="newsPage(-1)">
             < </button>
 
-              <button class="news-page-button" onclick="newsPage({{ news_page + 1 }}, {{ news }})">></button>
+              <button class="news-page-button" onclick="newsPage(1)">></button>
         </div>
       </div>
     </div>
   </div>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
+    let currentNewsPage = 0;
+    let totalNewsItems = 0;
+    const newsPerPage = 2;
+    document.addEventListener('DOMContentLoaded', () => {
+      const country = document.getElementById('news_country').value
+      loadNews(country, currentNewsPage)
+    })
+    function loadNews(country, page) {
+
+      fetch(`/api/news?news_country=${encodeURIComponent(country)}&news_page=${page}`)
+        .then(res => res.json())
+        .then(data => {
+          currentNewsPage = data.page
+          // console.log("current page", currentNewsPage)
+          const newsList = document.getElementById("newsList");
+          if (!newsList) {
+            console.error("newsList element not found");
+            return;
+          }
+
+          newsList.innerHTML = "";
+
+          if (!data.news || data.news.length === 0) {
+            newsList.innerHTML = "<li>No news available</li>";
+            return;
+          }
+
+          data.news.forEach(item => {
+            const li = document.createElement("li");
+            const a = document.createElement("a");
+
+            a.href = item.link;
+            a.textContent = item.title;
+            a.target = "_blank";
+
+            li.appendChild(a);
+            newsList.appendChild(li);
+          });
+          totalNewsItems = data.total;
+
+        })
+        .catch(err => console.error("News fetch error:", err));
+    }
+
     function changeNewsCountry() {
       const country = document.getElementById("news_country").value;
-      window.location.href = "/?news_country=" + country + "&news_page=" + 0;
+      currentNewsPage = 0;
+      loadNews(country, 0);
     }
 
-    function newsPage(page, news) {
+    function newsPage(direction) {
+
       const country = document.getElementById("news_country").value;
-      page;
-      if (page > news.length / 2 - 1) {
-        page = 0;
-      } else if (page < 0) {
-        page = Math.floor(news.length / 2) - 1;
-      }
-      console.log("news:", news, "page:", page);
-      window.location.href =
-        "/?news_country=" + country + "&news_page=" + page;
+
+      let newPage = currentNewsPage + direction;
+      // console.log("function", currentNewsPage)
+      loadNews(country, newPage);
     }
 
-    //SocketIO for live stock updates
-    const socket = io();
-    let subscribedSymbols = [];
-
+    //Search button
     document
       .getElementById("stockForm")
       .addEventListener("submit", function (e) {
@@ -157,29 +194,10 @@
           .getElementById("queryInput")
           .value.toUpperCase()
           .trim();
-        // if (!query || subscribedSymbols.includes(query)) return;
-
-        // // Pure SocketIO: Subscribe directly
-        // socket.emit("subscribe", { symbols: [query] });
-        // subscribedSymbols.push(query);
-
-        // // Add UI
-        // document.getElementById("livePrices").innerHTML +=
-        //   `<div id="${query}"><strong>${query}:</strong> Waiting for data...</div>`;
         window.location.href = "/stock/" + query;
         // Clear input
         document.getElementById("queryInput").value = "";
       });
-
-    socket.on("price_update", function (data) {
-      console.log("🔔 UI GOT:", data);
-      const div = document.getElementById(data.id);
-      if (div) {
-        const changeClass = data.change > 0 ? "green" : "red";
-        div.innerHTML = `<strong>${data.id}:</strong> $${data.price} 
-                     <span class="${changeClass}">(${data.change_percent?.toFixed(2)}%)</span>`;
-      }
-    });
   </script>
   {% block scripts %} {% endblock %}
 </body>

@@ -1,20 +1,34 @@
 import yfinance as yf
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room
 import threading
+from datetime import datetime, timezone
 
 
 def stock_webSocket(data, socketio):
-    symbols = data["symbols"]  # ✅ ['AAPL']
-    print(f"Streaming: {symbols}")
+    symbol = data.get("symbol")  # ✅ ['AAPL']
+    print(f"Streaming: {symbol}")
+    if symbol:
+        join_room(symbol)
 
-    def message_handler(msg):
-        socketio.emit("price_update", msg)  # ✅ Broadcast
+        def message_handler(msg):
+            symbol = msg.get("id")
+            socketio.emit(
+                "price_update",
+                {
+                    "symbol": msg.get("id"),
+                    "price": msg.get("price"),
+                    "time": int(datetime.now(timezone.utc).timestamp()),
+                },
+                room=symbol,
+            )
 
-    # ✅ FIXED: WS outside handler, in thread
-    def start_stream():
-        ws = yf.WebSocket()
-        ws.subscribe(symbols)
-        ws.listen(message_handler)  # Now runs continuously
+        # socketio.emit("price_update", msg)  # ✅ Broadcast
 
-    thread = threading.Thread(target=start_stream, daemon=True)
-    thread.start()
+        # ✅ FIXED: WS outside handler, in thread
+        def start_stream():
+            ws = yf.WebSocket()
+            ws.subscribe(symbol)
+            ws.listen(message_handler)  # Now runs continuously
+
+        thread = threading.Thread(target=start_stream, daemon=True)
+        thread.start()

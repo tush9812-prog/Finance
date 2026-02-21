@@ -2,21 +2,47 @@ import yfinance as yf
 
 
 def stock_get(stock, period="max", interval="1d"):
-    ticker = yf.Ticker(stock)
-    history = ticker.history(period=period, interval=interval)
-    print("history:", history)
-    info = ticker.info
-    details = {"price": history.to_dict("records"), "info": info}
-    chart_data = {
-        "labels": [str(date.date()) for date in history.index],
-        "open": history["Open"].tolist(),
-        "high": history["High"].tolist(),
-        "low": history["Low"].tolist(),
-        "close": history["Close"].tolist(),
-    }
-    print("Sample labels with time:", chart_data["labels"][:3])
-    print("details", details.get("info", {}))
-    return {"details": details, "chart_data": chart_data}
+    try:
+        ticker = yf.Ticker(stock)
+        history = ticker.history(period=period, interval=interval)
+
+        if history is None or history.empty:
+            return {
+                "details": {"price": [], "info": {}},
+                "chart_data": {
+                    "labels": [],
+                    "open": [],
+                    "high": [],
+                    "low": [],
+                    "close": [],
+                },
+            }
+        # print("history:", history)
+        info = ticker.info
+        details = {"price": history.to_dict("records"), "info": info}
+        chart_data = {
+            "labels": [str(date.date()) for date in history.index],
+            "open": history["Open"].tolist(),
+            "high": history["High"].tolist(),
+            "low": history["Low"].tolist(),
+            "close": history["Close"].tolist(),
+        }
+        # print("Sample labels with time:", chart_data["labels"][:400])
+        # print("details", details.get("info", {}))
+        return {"details": details, "chart_data": chart_data}
+    except Exception as e:
+        print("Yahoo error:", e)
+
+        return {
+            "details": {"price": [], "info": {}},
+            "chart_data": {
+                "labels": [],
+                "open": [],
+                "high": [],
+                "low": [],
+                "close": [],
+            },
+        }
 
 
 # print(get_stock_info("AAPL", "1mo"))

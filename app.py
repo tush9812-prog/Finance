@@ -5,17 +5,28 @@ from stockstrending import stocks_trending
 from webSocketForPriceStream import stock_webSocket
 import yfinance as yf
 from datetime import datetime, timezone
+from common.helperFunctions import get_sidebar_news, countries
 
 
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")
-countries = ["India 🇮🇳", "United States 🇺🇸", "China 🇨🇳", "Japan 🇯🇵", "Germany 🇩🇪"]
 
 
 @app.route("/stock/<symbol>")
 def get_single_stock_price(symbol):
     stock = stock_get(symbol)
-    return render_template("stock.html", symbol=symbol, stock=stock, show_table=False)
+    news, news_country, total_news, news_page = get_sidebar_news()
+    return render_template(
+        "stock.html",
+        countries=countries,
+        news=news,
+        total=total_news,
+        page=news_page,
+        news_country=news_country,
+        symbol=symbol,
+        stock=stock,
+        show_table=False,
+    )
 
 
 @app.route("/api/search/<symbol>", methods=["GET"])
@@ -25,15 +36,22 @@ def search_stock(symbol):
     # return jsonify({"symbol": symbol, "results": results})
 
 
+@app.route("/api/news")
+def api_news():
+    news, news_country, total_news, news_page = get_sidebar_news()
+
+    return jsonify(
+        {
+            "news": news,
+            "total": total_news,
+            "page": news_page,
+            "news_country": news_country,
+        }
+    )
+
+
 @app.route("/")
 def index():
-    selected_country = request.args.get("country", countries[0])
-    # News
-    news_country = request.args.get("news_country", countries[0])
-    info = stock_search(news_country)
-    news = list(info["news"])
-    news_page = min(request.args.get("news_page", 0, type=int), len(news))
-    news_per_page = 2
 
     # Most active stocks
     trending_stocks = stocks_trending()
@@ -42,31 +60,9 @@ def index():
     return render_template(
         "base.html",
         countries=countries,
-        news=news,
-        news_country=news_country,
-        news_page=news_page,
-        news_per_page=news_per_page,
         trending_stocks=trending_stocks,
         show_table=True,
     )
-
-
-@app.context_processor
-def inject_news_context():
-    """Auto-injects news vars to ALL templates"""
-    news_country = request.args.get("news_country", "United States 🇺🇸")
-    try:
-        info = stock_search(news_country)
-        news = list(info["news"])
-    except:
-        news = []
-    return {
-        "countries": countries,
-        "news": news,
-        "news_country": news_country,
-        "news_page": int(request.args.get("news_page", 0)),
-        "news_per_page": 2,
-    }
 
 
 @socketio.on("subscribe")

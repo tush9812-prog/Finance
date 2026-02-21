@@ -37,7 +37,7 @@ styles %}
   });
 
   socket.on("price_update", function (data) {
-    console.log("🔔 UI GOT:", data);
+    // console.log("🔔 UI GOT:", data);
     const div = document.getElementById(data.id);
     if (div) {
       const changeClass = data.change > 0 ? "green" : "red";

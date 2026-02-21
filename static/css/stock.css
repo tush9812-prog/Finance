@@ -1,21 +1,161 @@
-canvas + div { display: none; }
-
-.stock-page{
-  width: 60vw;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;   /* spacing between items */
-}
-
-.expand-content {
+canvas + div {
   display: none;
 }
 
-.expand-content.active {
-  display: block;
+.stock-page {
+  width: 60vw;
+  margin: 10px;
 }
 
+.stock-header-top {
+  margin-top: 10px;
+  color: antiquewhite;
+}
 
+.stock-header-symbol {
+  position: relative;
+  top: -8px;
+  font-size: 17px;
+}
+
+.stock-header-hr {
+  border: none; /* remove default border */
+  height: 2px; /* thickness */
+  background-color: #2a2e39;
+  position: relative;
+  top: -4px;
+  margin-bottom: 16px;
+}
+
+.stock-price {
+  font-size: 28px;
+}
+
+.stock-price-change {
+  font-size: 18px;
+}
+
+.stock-chart {
+  margin-top: 14px;
+  border: 2px solid #2a2e39;
+  padding: 8px;
+}
+.stats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px; /* spacing between items */
+  margin-top: 40px;
+}
+
+.stats-row {
+  display: flex;
+  justify-content: space-between; /* pushes spans apart */
+  align-items: center;
+  width: 100%;
+}
+
+.stats-row span:first-child {
+  text-align: left;
+}
+
+.stats-row span:last-child {
+  text-align: right;
+  font-weight: bold;
+}
+
+.stats-item hr {
+  margin: 6px 0;
+  border: 1px dashed #2a2e39;
+}
+
+.company-card {
+  border: 1px solid #2a2e39;
+  border-radius: 8px;
+  background: #0d141c;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+/* Header */
+.company-header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  padding: 16px;
+  text-align: left;
+  color: #e6e6e6;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.company-header:hover {
+  background: #131c26;
+}
+
+.arrow {
+  transition: transform 0.3s ease;
+}
+
+/* Content */
+.company-content {
+  display: none;
+  padding: 20px;
+  border-top: 1px solid #2a2e39;
+}
+
+.company-content.active {
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+/* Left Side */
+.company-left {
+  flex: 2;
+}
+
+.company-left h3 {
+  color: #6bbcff;
+  margin-bottom: 16px;
+}
+
+.company-left p {
+  line-height: 1.6;
+  color: #c9d1d9;
+}
+
+.website a {
+  color: #6bbcff;
+  text-decoration: none;
+}
+
+.more-btn {
+  margin-top: 16px;
+  padding: 10px 18px;
+  border-radius: 25px;
+  background: #1a2330;
+  border: 1px solid #2a2e39;
+  color: #e6e6e6;
+  cursor: pointer;
+}
+
+/* Right Side */
+.company-right {
+  flex: 1;
+  display: grid;
+  gap: 20px;
+}
+
+.fact strong {
+  display: block;
+  font-size: 20px;
+  color: #ffffff;
+}
+
+.fact span {
+  color: #9aa4b2;
+  font-size: 14px;
+}

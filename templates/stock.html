@@ -6,216 +6,323 @@
 <link rel="stylesheet" href="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.css" />
 {% endblock %} {% block content %}
 <div class="stock-page">
-  <!-- Header (Yahoo style) -->
-  <div class="stock-header">
-    <div class="symbol-info">
-      <h1>{{ symbol }}</h1>
-      <span class="market-status">Live • USD</span>
-    </div>
-    {{stock.details.info.get("fullExchangeName", "")}}
-    {{stock.details.info.get("quoteSourceName","")}}
-    {{stock.details.info.get("currency", "")}}
 
-    {{stock.details.info.get("longName", "")}}
-    {{stock.details.info.get("currentPrice","")}}
-    <!-- {{stock.details.info}} -->
-    <!-- Price + Change -->
-    {% set latest = stock.details.price[-1] if stock.details.price %}
-    <div class="price-section">
-      <div class="current-price">${{ "%.2f"|format(latest.Close|float) }}</div>
-      {% if stock.details.price|length > 1 %} {% set prev =
-      stock.details.price[-2] %} {% set change = latest.Close - prev.Close %} {%
-      set change_pct = (change / prev.Close * 100) %}
-      <div class="change {% if change > 0 %}positive{% else %}negative{% endif %}">
-        {{ "%.2f"|format(change) }} ({{ "%.2f"|format(change_pct) }}%)
-      </div>
-      {% endif %}
-    </div>
+  <!-- Header -->
+  <div class="stock-header-top">
+    {{stock.details.info.get("fullExchangeName", "")}} -
+    {% if stock.details.info.quoteSourceName %}
+    {{stock.details.info.get("quoteSourceName", "")}} •
+    {% endif %}
+    {{stock.details.info.get("currency", "")}}
   </div>
 
+  <div class="stock-header-symbol">
+    <h2> {{stock.details.info.get("longName", "")}} ( {{ symbol }} )</h2>
+  </div>
+
+  <hr class="stock-header-hr" />
+
+  <!-- Price and Change -->
+  <div>
+    {% set latest = stock.details.price[-1] if stock.details.price and stock.details.price|length > 0 else None %}
+    <span class="stock-price" id="live-price">
+      {{ "%.2f"|format(latest.Close|float) if latest else "0.00" }}
+    </span>
+    {% if stock.details.price|length > 1 %}
+    {% set previous_close = stock.details.info.get('regularMarketPreviousClose') %}
+    {% if previous_close %}
+    {% set change = latest.Close - previous_close %}
+    {% set change_pct = (change / previous_close * 100) %}
+    {% endif %}
+    <span id="live-change" class="stock-price-change {% if change > 0 %}green{% else %}red{% endif %}">
+      {{ "%.2f"|format(change) }} ({{ "%.2f"|format(change_pct) }}%)
+    </span>
+    {% endif %}
+  </div>
+
+
+
+
   <!-- Chart Container (Yahoo height/style) -->
-  <div id="tradingview_chart" style="width: 100%; height: 60vh; margin-bottom: 20px"></div>
+  <div class="stock-chart">
+    <div id="tradingview_chart" style=" height: 60vh; margin-bottom: 20px"></div>
+  </div>
+
 
   <!-- News/Stats below chart -->
   <div class="stats">
 
-    <div>
-      Open:
-      {{ "%.2f"|format(stock.details.price[-1].Open|float)
-      if stock.details.price|length > 0 }}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Previous Close</span>
+        <span>
+          {{ "%.2f"|format(stock.details.price[-2].Close|float)
+          if stock.details.price|length > 1 }}
+        </span>
+      </div>
+      <hr>
     </div>
 
-    <div>
-      Bid:
-      {{ "%.2f"|format(stock.details.info.bid|float)
-      if stock.details.info.bid }}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>
+          Open
+        </span>
+
+        <span>
+          {{ "%.2f"|format(stock.details.price[-1].Open|float)
+          if stock.details.price and stock.details.price|length > 0 }}
+        </span>
+      </div>
+      <hr>
+
     </div>
 
-    <div>
-      Ask:
-      {{ "%.2f"|format(stock.details.info.ask|float)
-      if stock.details.info.ask }}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>
+          Bid
+        </span>
+
+        <span>
+
+          {{ "%.2f"|format(stock.details.info.bid|float)
+          if stock.details.info.bid }}
+        </span>
+      </div>
+      <hr>
     </div>
 
-    <div>
-      52 Week Range:
-      {{ "%.2f"|format(stock.details.info.fiftyTwoWeekLow|float)
-      if stock.details.info.fiftyTwoWeekLow }}
-      -
-      {{ "%.2f"|format(stock.details.info.fiftyTwoWeekHigh|float)
-      if stock.details.info.fiftyTwoWeekHigh }}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>
+          Ask
+        </span>
+
+        <span>
+          {{ "%.2f"|format(stock.details.info.ask|float)
+          if stock.details.info.ask }}
+        </span>
+      </div>
+      <hr>
+
+
     </div>
-    <div>
-      Previous Close: {{ "%.2f"|format(stock.details.price[-2].Close|float) if
-      stock.details.price|length > 1 }}
+
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>
+          52 Week Range
+        </span>
+
+        <span>
+          {{ "%.2f"|format(stock.details.info.fiftyTwoWeekLow|float)
+          if stock.details.info.fiftyTwoWeekLow }}
+          -
+          {{ "%.2f"|format(stock.details.info.fiftyTwoWeekHigh|float)
+          if stock.details.info.fiftyTwoWeekHigh }}
+        </span>
+      </div>
+      <hr>
+
     </div>
 
 
-
-    {% if stock.details.price|length > 0 %}
-    <div class="stat-item">
-      <span class="stat-label">Day's Range:</span>
-      <span class="stat-value">
-        {{ "%.2f"|format(stock.details.price[-1].Low|float) }}
-        -
-        {{ "%.2f"|format(stock.details.price[-1].High|float) }}
-      </span>
+    {% if stock.details.price and stock.details.price|length > 0 %}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Day's Range</span>
+        <span>
+          {{ "%.2f"|format(stock.details.price[-1].Low|float) }}
+          -
+          {{ "%.2f"|format(stock.details.price[-1].High|float) }}
+        </span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
 
     {% if stock.details.info.regularMarketVolume %}
-    <div>
-      {{stock.details.info.regularMarketVolume}}
-
-
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Volume</span>
+        <span>{{ stock.details.info.regularMarketVolume }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
+
+
 
     {% if stock.details.info.averageVolume %}
-    <div>
-      {{stock.details.info.averageVolume}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Avg Volume</span>
+        <span>{{ stock.details.info.averageVolume }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
+
     {% if stock.details.info.marketCap %}
-    <div>
-      {{stock.details.info.marketCap}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Market Cap</span>
+        <span>{{ stock.details.info.marketCap }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
     {% if stock.details.info.beta %}
-    <div>
-      {{stock.details.info.beta}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Beta</span>
+        <span>{{ stock.details.info.beta }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
+
 
     {% if stock.details.info.trailingPE %}
-    <div>
-      {{stock.details.info.trailingPE}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>PE Ratio</span>
+        <span>{{ stock.details.info.trailingPE }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
+
     {% if stock.details.info.trailingEps %}
-    <div>
-      {{stock.details.info.trailingEps}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>EPS</span>
+        <span>{{ stock.details.info.trailingEps }}</span>
+      </div>
+      <hr>
+    </div>
+    {% endif %}
+
+
+    {% if stock.details.info.earningsTimestamp %}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Earnings Date</span>
+        <span>{{ stock.details.info.earningsTimestamp | datetimeformat }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
     {% if stock.details.info.earningsTimestamp %}
-    <div>
-      {{stock.details.info.earningsTimestamp | datetimeformat}}
-    </div>
-    {% endif %}
-
-    {% if stock.details.info.trailingAnnualDividendRate %}
-    <div>
-      <span>
-        {{stock.details.info.trailingAnnualDividendRate}}
-
-      </span>
-
-      {% if stock.details.info.trailingAnnualDividendYield %}
-      <span>
-        {{stock.details.info.trailingAnnualDividendYield}}
-      </span>
-      {% endif %}
-
-
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Earnings Date</span>
+        <span>{{ stock.details.info.earningsTimestamp | datetimeformat }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
     {% if stock.details.info.lastDividendDate %}
-    <div>
-      Last Dividend Date:
-      {{ stock.details.info.lastDividendDate | datetimeformat }}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>Ex-Dividend Date</span>
+        <span>{{ stock.details.info.lastDividendDate | datetimeformat }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
-
 
     {% if stock.details.info.targetMeanPrice %}
-    <div>
-      {{stock.details.info.targetMeanPrice}}
+    <div class="stats-item">
+      <div class="stats-row">
+        <span>1y Target Est</span>
+        <span>{{ stock.details.info.targetMeanPrice }}</span>
+      </div>
+      <hr>
     </div>
     {% endif %}
 
-    <!-- {% if stock.details.info.averageVolume%}}
-        <div>
-          
-        </div>
-        {% endif %}
 
-        {% if stock.details.info.averageVolume%}}
-        <div>
-          
-        </div>
-        {% endif %}
 
-        {% if stock.details.info.averageVolume%}}
-        <div>
-          {}
-        </div>
-        {% endif %}
 
-        {% if stock.details.info.averageVolume%}}
-        <div>
-          
-        </div>
-        {% endif %}
-
-        {% if stock.details.info.averageVolume%}}
-        <div>
-          
-        </div>
-        {% endif %} -->
 
   </div>
 
-  <div class="stock-overview">
-    <button class="expand-btn" data-name="{{ stock.details.info.get('longName','') }}"
-      data-industry="{{ stock.details.info.get('industry','') }}"
-      data-sector="{{ stock.details.info.get('sector','') }}">
-      ▼ {{stock.details.info.get("longName", "")}} Overview - {{stock.details.info.get("industry", "")}} /
-      {{stock.details.info.get("sector", "")}}
+  <div class="company-card">
+
+    <!-- Header -->
+    <button class="company-header">
+      <span class="arrow">▼</span>
+      <span class="title">
+        {{ stock.details.info.get('longName', '') }} Overview -
+        {{ stock.details.info.get('industry', '') }} /
+        {{ stock.details.info.get('sector', '') }}
+      </span>
     </button>
 
-    <div class="expand-content">
-      <p>This is hidden content.</p>
-      <p>More stock details here...</p>
+    <!-- Expandable Content -->
+    <div class="company-content">
+
+      <div class="company-left">
+        <h3>{{ stock.details.info.get('longName', '') }} Overview</h3>
+
+        <p>
+          {{ stock.details.info.get('longBusinessSummary', '') }}
+        </p>
+
+        {% if stock.details.info.website %}
+        <div class="website more-btn">
+          <a href="{{ stock.details.info.website }}" target="_blank">
+            More about {{ stock.details.info.get('longName', '') }}
+          </a>
+        </div>
+        {% endif %}
+
+      </div>
+
+      <div class="company-right">
+
+        <div class="fact">
+          <strong>{{ "{:,}".format(stock.details.info.get('fullTimeEmployees', 0)) }}</strong>
+          <span>Full Time Employees</span>
+        </div>
+
+        <div class="fact">
+          <strong>{{ stock.details.info.get('sector', '') }}</strong>
+          <span>Sector</span>
+        </div>
+
+        <div class="fact">
+          <strong>{{ stock.details.info.get('industry', '') }}</strong>
+          <span>Industry</span>
+        </div>
+
+      </div>
+
     </div>
   </div>
+
 </div>
 {% endblock %} {% block scripts %}
 <!-- TradingView Lightweight Charts -->
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 
   document.addEventListener('DOMContentLoaded', () => {
 
+    let currentCandle = null;
+
+    const container = document.getElementById("tradingview_chart");
 
     const chartData = JSON.parse('{{ stock.chart_data | tojson | safe }}');
-
-    const container = document.getElementById('tradingview_chart');
 
     if (!chartData || !chartData.labels || chartData.labels.length === 0) {
       console.warn("No chart data available");
@@ -226,30 +333,31 @@
       width: container.offsetWidth,
       height: container.offsetHeight || 500,
       layout: {
-        background: { color: '#000000' },
-        textColor: '#FFFFFF',
+        background: { color: "#000000" },
+        textColor: "#FFFFFF",
       },
       grid: {
         vertLines: { visible: false },
-        horzLines: { color: '#2A2E39' }
+        horzLines: { color: "#2A2E39" }
       },
       rightPriceScale: {
-        borderColor: '#2A2E39'
+        borderColor: "#2A2E39"
       },
       timeScale: {
-        borderColor: '#2A2E39',
-        timeVisible: true
+        borderColor: "#2A2E39",
+        timeVisible: false,
+        secondsVisible: false
       }
     });
 
     const candlestickSeries = chart.addSeries(
       LightweightCharts.CandlestickSeries,
       {
-        upColor: '#26a69a',
-        downColor: '#ef5350',
+        upColor: "#26a69a",
+        downColor: "#ef5350",
         borderVisible: false,
-        wickUpColor: '#26a69a',
-        wickDownColor: '#ef5350'
+        wickUpColor: "#26a69a",
+        wickDownColor: "#ef5350"
       }
     );
 
@@ -270,42 +378,74 @@
         height: container.offsetHeight || 500
       });
     });
-  });
+
+    // Cache previousClose once outside socket handler:
+    const previousClose = Number("{{ stock.details.info.get('regularMarketPreviousClose', 0) }}");
+    socket.emit("subscribe", {
+      symbol: "{{ symbol }}"
+    });
+    socket.on("price_update", (data) => {
+
+      if (!data.price) return;
+
+      const livePriceElement = document.getElementById("live-price");
+      const changeElement = document.getElementById("live-change");
+
+      const newPrice = Number(data.price);
+
+      // ✅ Update price
+      livePriceElement.textContent = newPrice.toFixed(2);
+
+      const previousClose = Number(
+        "{{ stock.details.info.get('regularMarketPreviousClose', 0) }}"
+      );
+      // ✅ Calculate change
+      const change = newPrice - previousClose;
+      const changePercent = previousClose
+        ? (change / previousClose) * 100
+        : 0;
+
+      changeElement.textContent =
+        change.toFixed(2) + " (" + changePercent.toFixed(2) + "%)";
 
 
+      changeElement.classList.remove("green", "red");
+      changeElement.classList.add(change >= 0 ? "green" : "red");
 
-  //Expand Overview
-  document.addEventListener("DOMContentLoaded", function () {
+      // ✅ Add candle to chart
+      // Proper 1-minute candle aggregation
+      const lastCandle = candles[candles.length - 1];
 
-    document.querySelectorAll(".expand-btn").forEach(button => {
+      lastCandle.high = Math.max(lastCandle.high, newPrice);
+      lastCandle.low = Math.min(lastCandle.low, newPrice);
+      lastCandle.close = newPrice;
+
+      candlestickSeries.update(lastCandle);
+
+
+    });
+
+
+    //Expand Overview
+    document.querySelectorAll(".company-header").forEach(button => {
 
       button.addEventListener("click", function () {
 
         const content = this.nextElementSibling;
-
-        if (!content) return;
+        const arrow = this.querySelector(".arrow");
 
         content.classList.toggle("active");
 
-        const longName = button.dataset.name;
-        const industry = button.dataset.industry;
-        const sector = button.dataset.sector;
-        const buttonContent =
-          "▼ " + longName + " Overview - " + industry + " / " + sector;
-
-        const buttonContentOnActive =
-          "▲ " + longName + " Overview";
-        this.textContent = content.classList.contains("active")
-          ? buttonContentOnActive
-          : buttonContent;
-
+        arrow.style.transform =
+          content.classList.contains("active")
+            ? "rotate(180deg)"
+            : "rotate(0deg)";
 
       });
 
     });
 
-  });
-
+  })
 
 
 

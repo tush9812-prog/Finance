@@ -6,36 +6,32 @@ body {
   padding: 8px 16px;
 }
 
-.body-page{
+.body-page {
   display: flex;
   flex-direction: column;
 }
-.navbar{
+.navbar {
   display: flex;
   flex-direction: column;
   position: absolute;
   right: 2px;
-  top:80px;
+  top: 80px;
   width: 280px;
-  
+
   gap: 22px; /* Consistent spacing between items */
   padding: 16px; /* Internal padding */
-  
+
   /* Optional: Center children horizontally */
 }
-.navbar-hr{
-  width: 4px;
+.navbar-hr {
+  width: 0.4px;
 }
 .news-divider {
-    border:  solid rgb(57, 60, 57);
-  width: 0px;
+  border: none;
+  width: 2px;
   height: 1800px;
-  /* position: relative; */
-  /* top:-12px; */
-  /* right: -14px; */
+  background-color: #2a2e39;
 }
-
-
 
 li {
   font-weight: 4px;
@@ -49,7 +45,6 @@ li {
   background-color: #1a1a1a;
   position: absolute;
   top: 20px;
-  
 }
 
 .sidebar h2,
@@ -71,17 +66,31 @@ li {
   align-items: center;
   gap: 20px;
 }
-@import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap");
 .bar-header h2 {
   flex-shrink: 0;
   margin: 0;
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family:
+    "SF Pro Display",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
 }
 
 /* yahoo-search.css - Perfect Yahoo Finance search bar */
 
 .siderbar-header {
-  font-family: "SF Pro Display", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-family:
+    "SF Pro Display",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif;
   font-size: 14px;
   margin-bottom: 12px;
 }
@@ -101,17 +110,15 @@ li {
   font-size: inherit;
 }
 
-.title-initial{
+.title-initial {
   color: #0078ff;
 }
 
 /* Remove ALL whitespace rendering */
 .no-space-span span:before {
-  content: '';
+  content: "";
   margin-left: -2px;
 }
-
-
 
 .search-input {
   flex: 1;
@@ -171,12 +178,12 @@ li {
   border-radius: 24px;
   padding: 4px;
   height: 34px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 .yahoo-search-box:focus-within {
-  border-color: #00C851;
-  box-shadow: 0 0 0 3px rgba(0,200,81,0.1);
+  border-color: #00c851;
+  box-shadow: 0 0 0 3px rgba(0, 200, 81, 0.1);
 }
 
 #queryInput {
@@ -187,14 +194,14 @@ li {
   font-size: 15px;
   padding: 8px 16px;
   outline: none;
-  caret-color: #00C851;
+  caret-color: #00c851;
 }
 
 .search-btn {
   width: 36px;
   height: 36px;
   border: none;
-  background: #00C851;
+  background: #00c851;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -208,7 +215,6 @@ li {
   transform: scale(1.05);
 }
 
-
 .green {
   color: green;
 }
@@ -217,7 +223,7 @@ li {
   color: red;
 }
 
-main{
+main {
   display: flex;
   flex-direction: column;
 }
@@ -226,9 +232,10 @@ main{
   /* width: calc(100% - 200px); */
   display: flex;
   /* flex-direction: column; */
-} 
+}
 
 .divider {
+  margin-top: 14px;
   border: 1.4px solid rgb(86, 138, 86);
   /* height: 1px; */
   /* background-color: #2A2E39; */
@@ -238,7 +245,7 @@ main{
   /* top: -10px; */
 }
 
-.news-button{
+.news-button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -248,7 +255,6 @@ main{
   border: none !important;
   color: #f574ee;
   border-radius: 50% !important;
-
 }
 
 .news-page-button * {
@@ -258,17 +264,16 @@ main{
 .news-page-button:hover {
   transform: scale(1.05);
   /* background: #818ff2; */
-  
+
   /* Circular boundary/glow */
-  box-shadow: 
+  box-shadow:
     0 0 0 1px rgb(245, 241, 244),
     0 0px 1px rgb(248, 244, 248);
-
 }
 
 .news-page-button:focus-visible {
   outline: none;
-  box-shadow: 0 0 0 2px #00C851;
+  box-shadow: 0 0 0 2px #00c851;
 }
 /* Update stock-table.css - add container with exact dimensions */
 
@@ -289,29 +294,28 @@ main{
   top: 14px;
   left: 8px;
   /* Responsive behavior */
- /* Minimum height on mobile */
+  /* Minimum height on mobile */
 }
 
 /* Under 620px - full viewport width + horizontal scroll */
-@media (max-width: 948px) and (min-width:625px) {
+@media (max-width: 948px) and (min-width: 625px) {
   .table-container {
     width: 58vw !important; /* Full viewport width */
     height: 100vh; /* Full viewport height */
     max-width: none;
     border-radius: 0; /* Edge-to-edge */
     border-left: none; /* Remove side border on mobile */
-    
+
     /* Enable horizontal scroll for table */
     overflow-x: auto !important;
     /* overflow-y: auto; */
-    
+
     /* Sticky header on scroll */
     border-top: 1px solid #2a2e39;
   }
 }
 
 /* Tablet - intermediate */
-
 
 .table-container::-webkit-scrollbar {
   width: 6px; /* Thin scrollbar */
@@ -333,12 +337,11 @@ main{
   background: #333333; /* Slightly lighter on hover */
 }
 
-
 .table-container .stock-table {
   width: 100%;
   height: 100%;
   border-collapse: collapse;
-   scrollbar-width: thin;
+  scrollbar-width: thin;
   scrollbar-color: #000000 #1a1a1a;
 }
 
@@ -360,13 +363,12 @@ main{
   background-color: #151515;
 }
 
-
 /* stock-table.css */
 .stock-table {
   width: 100%;
   border-collapse: collapse;
   font-family: "GT America", Arial, sans-serif;
-  color: #E3E3E3;
+  color: #e3e3e3;
 }
 
 /* Header row like screenshot */
@@ -379,7 +381,7 @@ main{
   font-size: 12px;
   text-align: left;
   border-bottom: 1px solid #2a2e39;
-  color: #E3E3E3;
+  color: #e3e3e3;
 }
 
 /* Body rows */
@@ -412,7 +414,6 @@ main{
   border-left: 1px solid #141414;
 }
 
-
 /* Add vertical border after 1st column - update stock-table.css */
 
 .table-container .stock-table th:nth-child(1),
@@ -431,17 +432,16 @@ main{
 .table-container .stock-table td:nth-child(1) a:hover,
 .table-container .stock-table td:nth-child(1) a:active {
   width: 28px;
-   height: 18px;
-  color: #9FD7FF !important;
+  height: 18px;
+  color: #9fd7ff !important;
   text-decoration: none;
 }
-
 
 .table-container .stock-table th:nth-child(2),
 .table-container .stock-table td:nth-child(2) {
   /* Second column onwards - subtle vertical divider after 1st col */
   border-left: 1px solid #2a2e39;
-   /* Extra padding after divider */
+  /* Extra padding after divider */
 }
 
 /* Alternative: Single vertical line exactly after 1st column */
@@ -452,7 +452,7 @@ main{
 
 .table-container .stock-table th:nth-child(1)::after,
 .table-container .stock-table td:nth-child(1)::after {
-  content: '';
+  content: "";
   position: absolute;
   right: 0;
   top: 0;
@@ -463,25 +463,25 @@ main{
 }
 
 @media (max-width: 805px) {
-  .news-divider{
+  .news-divider {
     display: none !important;
   }
-  .sidebar{
+  .sidebar {
     display: none !important;
   }
-   .table-container {
+  .table-container {
     width: 100% !important; /* Full width */
     max-width: 480px !important; /* Cap at 480px */
     height: 100vh;
     margin: 0 auto; /* Center if viewport > 480px */
   }
-  
+
   .stock-table {
     width: 100% !important; /* Fill container */
     min-width: 480px !important; /* Force horizontal scroll */
     table-layout: fixed; /* Prevent column shrinking */
   }
-  
+
   /* Column flexibility */
   .stock-table th,
   .stock-table td {
