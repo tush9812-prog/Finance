@@ -319,7 +319,7 @@
   document.addEventListener('DOMContentLoaded', () => {
 
     let currentCandle = null;
-
+    const socket = io();
     const container = document.getElementById("tradingview_chart");
 
     const chartData = JSON.parse('{{ stock.chart_data | tojson | safe }}');

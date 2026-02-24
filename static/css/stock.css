@@ -29,10 +29,12 @@ canvas + div {
 
 .stock-price {
   font-size: 28px;
+  font-weight: 900;
 }
 
 .stock-price-change {
   font-size: 18px;
+  font-weight: 900;
 }
 
 .stock-chart {

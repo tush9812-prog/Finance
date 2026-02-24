@@ -4,6 +4,7 @@ body {
   font-family: "GT America", Arial, sans-serif;
   font-size: 12px;
   padding: 8px 16px;
+  margin: 0px;
 }
 
 .body-page {
@@ -12,12 +13,8 @@ body {
 }
 .navbar {
   display: flex;
-  flex-direction: column;
-  position: absolute;
-  right: 2px;
-  top: 80px;
   width: 280px;
-
+  flex: 1;
   gap: 22px; /* Consistent spacing between items */
   padding: 16px; /* Internal padding */
 }
@@ -38,11 +35,14 @@ li {
 .sidebar {
   color: white !important;
   width: 241px;
-  margin: 20px;
-  padding: 8px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.sidebar-background {
   background-color: #1a1a1a;
-  position: absolute;
-  top: 20px;
 }
 
 .sidebar h2,
@@ -91,8 +91,92 @@ li {
     sans-serif;
   font-size: 14px;
   margin-bottom: 12px;
+  font-style: italic;
+  font-weight: bold;
+  text-align: center;
+  margin: 8px 1px 12px 1px;
 }
 
+.country-selector select {
+  background: #2a2e39;
+  color: white;
+  border: 1px solid #3a3e44;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  min-width: 70px;
+  margin-left: 8px;
+}
+
+.gainers-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 280px;
+  overflow-y: auto;
+}
+
+.gainer-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 20px; /* ✅ Compact rows */
+  border-bottom: 1px solid #2a2e39;
+  font-size: 13px;
+  transition: background 0.2s;
+}
+
+.gainer-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.symbol {
+  font-weight: 500;
+  color: #e6e6e6;
+  flex: 1;
+}
+
+.price-change {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+  min-width: 80px;
+}
+
+.price {
+  font-size: 12px;
+  color: #9aa4b2;
+  font-weight: 500;
+}
+
+.change {
+  font-size: 12px;
+  font-weight: 700;
+  margin-top: 1px;
+}
+
+.green {
+  color: #26a69a !important;
+} /* ✅ Gainer green */
+
+.no-data {
+  padding: 20px;
+  text-align: center;
+  color: #666;
+  font-style: italic;
+}
+
+/* Scrollbar */
+.gainers-list::-webkit-scrollbar {
+  width: 4px;
+}
+.gainers-list::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+.gainers-list::-webkit-scrollbar-thumb {
+  background: #2a2e39;
+  border-radius: 2px;
+}
 /* Nuclear option - ZERO space between spans */
 
 .no-space-span {
@@ -265,11 +349,19 @@ main {
 }
 
 .main-body {
-  /* width: calc(100% - 200px); */
+  /* min-width: 700px; */
   display: flex;
+  flex-direction: row;
+  overflow: auto;
+  flex: 1;
+  gap: 40px;
   /* flex-direction: column; */
 }
 
+.main-body-content {
+  width: calc(100vw - 320px);
+  /* padding: 20px; */
+}
 .divider {
   margin-top: 14px;
   border: 1.4px solid rgb(86, 138, 86);
@@ -316,11 +408,9 @@ main {
 /* Responsive table-container - scrollable under 620px */
 
 .table-container {
-  width: 606px;
-  height: 1037px;
-  max-width: 100%; /* Never exceed viewport */
+  width: 400px;
+  /* Never exceed viewport */
   overflow-y: auto;
-  overflow-x: hidden;
   color: #e3e3e3;
   font-family: "GT America", Arial, sans-serif;
   background-color: #050505;
@@ -336,9 +426,9 @@ main {
 /* Under 620px - full viewport width + horizontal scroll */
 @media (max-width: 948px) and (min-width: 625px) {
   .table-container {
-    width: 58vw !important; /* Full viewport width */
+    /* Full viewport width */
     height: 100vh; /* Full viewport height */
-    max-width: none;
+
     border-radius: 0; /* Edge-to-edge */
     border-left: none; /* Remove side border on mobile */
 
@@ -505,12 +595,6 @@ main {
   .sidebar {
     display: none !important;
   }
-  .table-container {
-    width: 100% !important; /* Full width */
-    max-width: 480px !important; /* Cap at 480px */
-    height: 100vh;
-    margin: 0 auto; /* Center if viewport > 480px */
-  }
 
   .stock-table {
     width: 100% !important; /* Fill container */
@@ -523,4 +607,138 @@ main {
   .stock-table td {
     min-width: 80px; /* Minimum column size */
   }
+}
+
+.predictor {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 30px;
+  border-radius: 15px;
+  color: white;
+  text-align: center;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+#stock-symbol {
+  padding: 15px;
+  font-size: 18px;
+  border: none;
+  border-radius: 10px;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.prediction {
+  margin-top: 20px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+/* CSS Variables for themes - override your existing colors */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --search-bg: #ffffff;
+}
+
+[data-theme="light"] {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f8f9fa;
+  --text-primary: #000000;
+  --text-secondary: #666666;
+  --search-bg: #ffffff;
+  .sun-icon {
+    color: rgb(208, 246, 18); /* Bright lime ✓ */
+    filter: drop-shadow(0 0 4px rgb(208, 246, 18)); /* Glow effect */
+    transform: scale(1.8); /* 10% bigger */
+  }
+  .theme-toggle-btn {
+    color: yellow; /* Button inherits to SVG */
+  }
+  .title-later {
+    color: #185de8;
+  }
+}
+
+[data-theme="dark"] {
+  --bg-primary: #121212;
+  --bg-secondary: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --search-bg: #2a2a2a;
+
+  .title-later {
+    color: white;
+  }
+}
+
+/* Apply variables - add these to body, .bar-header, etc. */
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition:
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.bar-header {
+  background-color: var(--header-bg);
+  font-weight: 900;
+}
+
+.search-container input {
+  background-color: var(--search-bg);
+}
+
+/* Update other elements like .stock-table, .sidebar-background, etc. with var() */
+
+/* Toggle button styles */
+.theme-toggle-container {
+  display: flex;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  color: rgb(240, 186, 186);
+}
+
+.theme-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  transition: opacity 0.3s ease;
+}
+
+.sun-icon {
+  opacity: 1;
+}
+
+.moon-icon {
+  opacity: 0;
+  position: absolute;
+}
+
+[data-theme="dark"] .sun-icon {
+  opacity: 0;
+}
+
+[data-theme="dark"] .moon-icon {
+  opacity: 1;
 }

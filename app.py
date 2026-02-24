@@ -6,6 +6,8 @@ from webSocketForPriceStream import stock_webSocket
 import yfinance as yf
 from datetime import datetime, timezone
 from common.helperFunctions import get_sidebar_news, countries
+from common.topGainers import fetch_stocks_cached
+import time
 
 
 app = Flask(__name__)
@@ -15,6 +17,7 @@ socketio = SocketIO(app, cors_allowed_origins="*")
 @app.route("/stock/<symbol>")
 def get_single_stock_price(symbol):
     stock = stock_get(symbol)
+    print("Stock data:", stock["details"].get("info")["symbol"])
     news, news_country, total_news, news_page = get_sidebar_news()
     return render_template(
         "stock.html",
@@ -23,7 +26,7 @@ def get_single_stock_price(symbol):
         total=total_news,
         page=news_page,
         news_country=news_country,
-        symbol=symbol,
+        symbol=stock["details"].get("info")["symbol"],
         stock=stock,
         show_table=False,
     )
@@ -62,6 +65,22 @@ def index():
         countries=countries,
         trending_stocks=trending_stocks,
         show_table=True,
+    )
+
+
+@app.route("/api/top-gainers/<market>", methods=["GET"])
+def top_gainers(market: str):
+    """Flask API endpoint for dropdown selection."""
+    market = request.args.get("market", "US")
+    cache_key = int(time.time() // 8000)  # 5-min cache key
+    data = fetch_stocks_cached(market, cache_key)
+    return jsonify(
+        {
+            "market": market,
+            "timestamp": time.time(),
+            "gainers": data,
+            "count": len(data),
+        }
     )
 
 

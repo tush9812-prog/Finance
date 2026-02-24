@@ -20,7 +20,7 @@
           <span class="no-space-span">
             <a href="/">
               <span class="title-initial">Fin</span>
-              <span style="color: white;">ance</span>
+              <span class="title-later">ance</span>
             </a>
 
           </span>
@@ -49,7 +49,6 @@
         <div id="livePrices"></div>
       </div>
 
-      <!-- <div id="clock" class="header-clock"></div> -->
       <div class="date-time-container">
         <div class="header-clock">
           <span id="clock-date" class="clock-date"></span>
@@ -59,7 +58,31 @@
         <input type="date" id="date-picker" class="hidden-date-picker">
       </div>
 
-      <!-- <button>🔔</button> -->
+      <div class="theme-toggle-container">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle dark mode">
+          <svg class="theme-icon sun-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <!-- Larger glowing center (r=6 → bigger) -->
+            <circle cx="12" cy="12" r="6" stroke="none" fill="currentColor" opacity="0.9" />
+      
+            <!-- Prominent 16 rays (longer + tapered) -->
+            <path d="M12 2 L12.5 1 L13 2 M12 22 L12.5 23 L13 22" />
+            <path d="M2 12 L1 12.5 L2 13 M22 12 L23 12.5 L22 13" />
+            <path d="M4.9 4.9 L5.2 4.6 L5.5 4.9 M19.1 19.1 L18.8 19.4 L19.1 19.7" />
+            <path d="M19.1 4.9 L18.8 5.2 L19.1 5.5 M4.9 19.1 L5.2 18.8 L5.5 19.1" />
+            <path d="M7.8 7.8 L8 7.5 L8.2 7.8 M16.2 16.2 L16 16.5 L16.2 16.8" />
+            <path d="M16.2 7.8 L16 8 L16.2 8.2 M7.8 16.2 L8 16 L8.2 16" />
+      
+            <!-- Outer glow ring -->
+            <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1" opacity="0.3" />
+          </svg>
+      
+          <svg class="theme-icon moon-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </div>
+
     </div>
     <hr class="divider" />
   </div>
@@ -70,82 +93,124 @@
     <div class="body-page-content">
       <main>
         <div class="main-body">
-
-          {% if show_table %}
-          <div class="table-container">
-            <table class="stock-table">
-              <thead class="table-head">
+          <div class="main-body-content">
+            {% if show_table %}
+            <div class="table-container">
+              <table class="stock-table">
+                <thead class="table-head">
+                  <tr>
+                    <th>Symbol</th>
+                    <th>Name</th>
+                    <th>Price</th>
+                    <th>Change</th>
+                    <th>Change %</th>
+                    <th>Volume</th>
+                    <th>Avg_Volume</th>
+                  </tr>
+                </thead>
+                {% for stock in trending_stocks %}
                 <tr>
-                  <th>Symbol</th>
-                  <th>Name</th>
-                  <th>Price</th>
-                  <th>Change</th>
-                  <th>Change %</th>
-                  <th>Volume</th>
-                  <th>Avg_Volume</th>
+                  <td><a href="/stock/{{ stock.Symbol }}">{{ stock.Symbol }}</a></td>
+                  <td>{{ stock.Name }}</td>
+                  <td>{{ stock.Price }}</td>
+                  <td>{{ stock.Change }}</td>
+                  <td>{{ stock["Change %"] }}</td>
+                  <td>{{ stock.Volume }}</td>
+                  <td>{{ stock.Avg_Volume }}</td>
                 </tr>
-              </thead>
-              {% for stock in trending_stocks %}
-              <tr>
-                <td><a href="/stock/{{ stock.Symbol }}">{{ stock.Symbol }}</a></td>
-                <td>{{ stock.Name }}</td>
-                <td>{{ stock.Price }}</td>
-                <td>{{ stock.Change }}</td>
-                <td>{{ stock["Change %"] }}</td>
-                <td>{{ stock.Volume }}</td>
-                <td>{{ stock.Avg_Volume }}</td>
-              </tr>
-              {% endfor %}
-            </table>
+                {% endfor %}
+              </table>
+            </div>
+      
+            {% endif %}
+      
+            {% block content %}{% endblock %}
           </div>
-
-          {% endif %}
-          {% block content %}{% endblock %}
-
+      
+          <div class="navbar">
+            <div class="navbar-hr">
+              <hr class="news-divider" />
+            </div>
+      
+            <div class="trending sidebar">
+              <div class="sidebar-section sidebar-background">
+                <div class="siderbar-header">News</div>
+                <div class="country-selector">
+                  <select id="news_country" onChange="changeNewsCountry()">
+                    {% for country in countries %}
+                    <option value="{{ country }}" {% if country==news_country %}selected{% endif %}>
+                      {{ country }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                </div>
+      
+                <ul id="newsList">
+                  {% for news_item in news %}
+                  <li><a href="{{ news_item.link }}">{{ news_item.title }}</a></li>
+                  {% endfor %}
+                </ul>
+                <div class="news-button">
+                  <button class="news-page-button" onclick="newsPage(-1)">
+                    < </button>
+      
+                      <button class="news-page-button" onclick="newsPage(1)">></button>
+                </div>
+      
+              </div>
+              <div class="sidebar-section sidebar-background">
+                <div class="siderbar-header">
+                  Top Gainers 📈
+                </div>
+                <!-- <div class="country-selector">
+                        <select id="gainers_country" onchange="loadTopGainers()">
+                          <option value="US">🇺🇸 US</option>
+                          <option value="India">🇮🇳 India</option>
+                        </select>
+                      </div> -->
+                <ul id="gainersList" class="gainers-list"></ul>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </div>
-
-    <!-- DIV FOR SIDEBAR -->
-    <div class="navbar">
-      <div class="navbar-hr">
-        <hr class="news-divider" />
-      </div>
-
-      <div class="trending sidebar">
-        <div class="siderbar-header">News</div>
-        <div class="country-selector">
-          <select id="news_country" onChange="changeNewsCountry()">
-            {% for country in countries %}
-            <option value="{{ country }}" {% if country==news_country %}selected{% endif %}>
-              {{ country }}
-            </option>
-            {% endfor %}
-          </select>
-        </div>
-
-        <ul id="newsList">
-          {% for news_item in news %}
-          <li><a href="{{ news_item.link }}">{{ news_item.title }}</a></li>
-          {% endfor %}
-        </ul>
-        <div class="news-button">
-          <button class="news-page-button" onclick="newsPage(-1)">
-            < </button>
-
-              <button class="news-page-button" onclick="newsPage(1)">></button>
-        </div>
-      </div>
-    </div>
+  
+</div>
   </div>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
+    document.addEventListener('DOMContentLoaded', () => {
+  const html = document.documentElement;
+  const btn = document.getElementById('theme-toggle');
+  
+  // Calculate initial theme: localStorage > system > default
+  const localTheme = localStorage.getItem('finance-theme');
+  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  let currentTheme = localTheme || (systemDark ? 'dark' : 'light');
+  
+  html.setAttribute('data-theme', currentTheme);
+  
+  // Update button aria-label
+  btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
+  
+  // Toggle on click
+  btn.addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', currentTheme);
+    localStorage.setItem('finance-theme', currentTheme);
+    btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
+  });
+  
+});
+
+
     let currentNewsPage = 0;
     let totalNewsItems = 0;
     const newsPerPage = 2;
     document.addEventListener('DOMContentLoaded', () => {
-      const country = document.getElementById('news_country').value
-      loadNews(country, currentNewsPage)
+      const country = document.getElementById('news_country')?.value
+      loadNews(country, currentNewsPage);
 
       const dateEl = document.getElementById('clock-date');
       const picker = document.getElementById('date-picker');
@@ -206,6 +271,44 @@
         })
         .catch(err => console.error("News fetch error:", err));
     }
+    function loadTopGainers() {
+  const country = document.getElementById('gainers_country')?.value;
+  fetch(`/api/top-gainers/${country}`)  // ✅ Pass country param
+    .then(res => res.json())
+    .then(data => {
+      const gainersList = document.getElementById("gainersList");
+      gainersList.innerHTML = "";
+      
+      if (!data.gainers?.length) {
+        gainersList.innerHTML = "<li class='no-data'>No gainers available</li>";
+        return;
+      }
+      
+      data.gainers.slice(0, 20).forEach(stock => {  // Top 10 like image
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.href = `/stock/${stock.symbol}`;
+        a.innerHTML = `
+          <span class="symbol">${stock.symbol}</span>
+          <span class="price-change">
+            <span class="price">${stock.price || '—'}</span>
+            <span class="change green">${stock.change_pct || stock.change || ''}</span>
+          </span>
+        `;
+        a.target = "_blank";
+        a.className = "gainer-row";
+        li.appendChild(a);
+        gainersList.appendChild(li);
+      });
+    })
+    .catch(err => {
+      document.getElementById("gainersList").innerHTML = "<li class='no-data'>Load error</li>";
+      console.error(err);
+    });
+}
+
+// Auto-load on page
+document.addEventListener('DOMContentLoaded', loadTopGainers);
 
     function changeNewsCountry() {
       const country = document.getElementById("news_country").value;
@@ -262,6 +365,30 @@
 
       picker.valueAsDate = now;
     }
+
+//     async function predictStock() {
+//   const symbol = document.getElementById('stock-symbol').value.toUpperCase();
+  
+//   try {
+//     const response = await fetch('/predict', {
+//       method: 'POST',
+//       headers: {'Content-Type': 'application/json'},
+//       body: JSON.stringify({symbol: symbol})
+//     });
+//     console.log("Response status:", response);
+//     const result = await response.json();
+//     document.getElementById('prediction-result').innerHTML = `
+//       <div class="prediction">
+//         <h4>${symbol}: $${result.current_price.toFixed(2)}</h4>
+//         <h3>Predicted: $${result.predicted_price.toFixed(2)} 
+//           (${result.change_pct > 0 ? '+' : ''}${result.change_pct.toFixed(2)}%)</h3>
+//         <p><strong>${result.direction}</strong> | Accuracy: ${result.accurity}%</p>
+//       </div>
+//     `;
+//   } catch (error) {
+//     document.getElementById('prediction-result').innerHTML = '<p>Error: Invalid symbol</p>';
+//   }
+// }
   </script>
   {% block scripts %} {% endblock %}
 </body>
