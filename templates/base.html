@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}{% endblock %}</title>
   {% block styles %}
+  <meta name="color-scheme" content="dark light"> 
   <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
   {% endblock %}
 </head>
@@ -185,30 +186,41 @@
   </div>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-  const html = document.documentElement;
-  const btn = document.getElementById('theme-toggle');
-  
-  // Calculate initial theme: localStorage > system > default
-  const localTheme = localStorage.getItem('finance-theme');
-  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  let currentTheme = localTheme || (systemDark ? 'dark' : 'light');
-  
-  html.setAttribute('data-theme', currentTheme);
-  
-  // Update button aria-label
-  btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
-  
-  // Toggle on click
-  btn.addEventListener('click', () => {
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    (function() {
+      const html = document.documentElement;
+      html.style.colorScheme = 'dark';  // Force browser dark
+      html.setAttribute('data-theme', 'dark');  // Your CSS trigger
+    })();
+    (function() {
+    const html = document.documentElement;
+    const btn = document.getElementById('theme-toggle');
+    
+    // Force dark immediately
+    html.setAttribute('data-theme', 'dark');
+    
+    if (btn) {
+      btn.setAttribute('aria-label', 'Switch to light mode');
+    }
+    
+    // On load: Respect localStorage/system
+    const localTheme = localStorage.getItem('finance-theme');
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    let currentTheme = localTheme || (systemDark ? 'dark' : 'dark');  // Default: dark
+    
     html.setAttribute('data-theme', currentTheme);
-    localStorage.setItem('finance-theme', currentTheme);
-    btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
-  });
-  
-});
-
+    
+    if (btn) {
+      btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
+      
+      // Toggle click
+      btn.addEventListener('click', () => {
+        currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', currentTheme);
+        localStorage.setItem('finance-theme', currentTheme);
+        btn.setAttribute('aria-label', `Switch to ${currentTheme === 'dark' ? 'light' : 'dark'} mode`);
+      });
+    }
+  })();
 
     let currentNewsPage = 0;
     let totalNewsItems = 0;

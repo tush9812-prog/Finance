@@ -1,17 +1,24 @@
 * {
   box-sizing: border-box;
+  color-scheme: dark !important;
 }
 
+:root,
 html {
-  height: 100vh;
-  /* Full viewport - REQUIRED */
+  --bg-primary: #121212 !important;
+  /* Dark BG */
+  --bg-secondary: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: #aaaaaa;
+  --search-bg: #2a2a2a;
+  background-color: #121212 !important;
+  /* Paint dark */
 }
 
 
 
 body {
   background-color: black;
-  color: white;
   font-family: "GT America", Arial, sans-serif;
   font-size: 12px;
   padding: 8px 16px;
@@ -138,7 +145,7 @@ li {
   list-style: none;
   padding: 0;
   margin: 0;
-  max-height: 280px;
+  max-height: 680px;
   overflow-y: auto;
 }
 
