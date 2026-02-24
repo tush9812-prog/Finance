@@ -104,4 +104,4 @@ def datetimeformat(value):
 
 if __name__ == "__main__":
     # socketio.run(app, debug=True, port=4000)
-    socketio.run(app, debug=False, port=5000)
+    socketio.run(app, debug=True, port=4000)

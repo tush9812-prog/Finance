@@ -1,8 +1,10 @@
 import yfinance as yf
+import time
 
 
 def stock_get(stock, period="max", interval="1d"):
     try:
+        time.sleep(2)
         ticker = yf.Ticker(stock)
         if ticker.info.get("quoteType") == "EQUITY":
             history = ticker.history(period=period, interval=interval)
@@ -64,6 +66,8 @@ def stock_get(stock, period="max", interval="1d"):
 
 def stock_search(symbol):
     # print("Searching for:", symbol)
+    time.sleep(2)
+
     results = yf.Search(symbol)
     # print("results:", results.quotes)
     results = {
@@ -111,6 +115,8 @@ def stock_indices():
             "Euronext 100",
         ],
     }
+    time.sleep(2)
+
     us = yf.Market("ASIA")
     print("US Market Status:", us.status)  # Dict: open/high/low
     print("US Summary:", us.summary)  # DataFrame preview

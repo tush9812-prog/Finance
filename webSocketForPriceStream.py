@@ -2,6 +2,7 @@ import yfinance as yf
 from flask_socketio import SocketIO, emit, join_room
 import threading
 from datetime import datetime, timezone
+import time
 
 
 def stock_webSocket(data, socketio):
@@ -26,6 +27,8 @@ def stock_webSocket(data, socketio):
 
         # ✅ FIXED: WS outside handler, in thread
         def start_stream():
+            time.sleep(2)
+
             ws = yf.WebSocket()
             ws.subscribe(symbol)
             ws.listen(message_handler)  # Now runs continuously
