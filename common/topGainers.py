@@ -5,8 +5,6 @@ import re
 from typing import List, Dict, Any
 import time
 from functools import lru_cache
-import json
-from nsetools import Nse
 
 app = Flask(__name__)
 
@@ -76,65 +74,4 @@ def parse_table(soup: BeautifulSoup, market: str) -> List[Dict[str, str]]:
                         }
                     )
 
-    elif market == "India":
-        # NSE: Dynamic table (try common selectors)
-        table = soup.find("table", {"id": "topGainer-table"}) or soup.find(
-            "table", class_="table"
-        )
-        if not table:
-            # Fallback script data
-            scripts = soup.find_all("script")
-            for script in scripts:
-                if script.string and (
-                    "topGainers" in script.string or "gainer" in script.string.lower()
-                ):
-                    match = re.search(r'"data":\s*(\[.*?\])', script.string, re.DOTALL)
-                    if match:
-                        try:
-                            data = json.loads(match.group(1))
-                            for item in data[:20]:
-                                tickers.append(
-                                    {
-                                        "symbol": item.get("symbol", ""),
-                                        "price": item.get("price", ""),
-                                        "change_pct": item.get("pchange", ""),
-                                        "volume": item.get("quantity", ""),
-                                    }
-                                )
-                            break
-                        except:
-                            pass
-            return tickers
-
-        tbody = table.find("tbody")
-        rows = tbody.find_all("tr") if tbody else table.find_all("tr")[1:21]
-        for row in rows:
-            cells = row.find_all("td")
-            if len(cells) >= 5:
-                tickers.append(
-                    {
-                        "symbol": cells[0].text.strip(),
-                        "price": cells[2].text.strip(),
-                        "change_pct": cells[3].text.strip(),
-                        "volume": cells[4].text.strip() if len(cells) > 4 else "",
-                    }
-                )
-
     return tickers[:20]
-
-
-def parse_nse_api(data: dict) -> List[Dict[str, str]]:
-    """Parse NSE JSON API response."""
-    tickers = []
-    if "data" in data:
-        for item in data["data"][:20]:  # Top 20
-            tickers.append(
-                {
-                    "symbol": item.get("symbol", ""),
-                    "price": f"{item.get('lastPrice', 0):.2f}",
-                    "change_pct": f"{item.get('change', 0):.2f} ({item.get('pChange', 0):.2f}%)",
-                    "change": str(item.get("change", 0)),
-                    "volume": str(item.get("totalTradedVolume", 0)),
-                }
-            )
-    return tickers
