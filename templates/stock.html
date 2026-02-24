@@ -2,8 +2,7 @@
 %} {% block styles %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
 <link rel="stylesheet" href="{{ url_for('static', filename='css/stock.css') }}" />
-<!-- TradingView Lightweight Charts (Yahoo style) -->
-<link rel="stylesheet" href="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.css" />
+
 {% endblock %} {% block content %}
 <div class="stock-page">
 
@@ -312,7 +311,9 @@
 </div>
 {% endblock %} {% block scripts %}
 <!-- TradingView Lightweight Charts -->
-<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+ <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<!-- Fixed: Standalone JS (no separate CSS file exists) -->
+<script src="https://unpkg.com/lightweight-charts@4.1.7/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 
@@ -385,7 +386,6 @@
       symbol: "{{ symbol }}"
     });
     socket.on("price_update", (data) => {
-
       if (!data.price) return;
 
       const livePriceElement = document.getElementById("live-price");
@@ -412,6 +412,18 @@
       changeElement.classList.remove("green", "red");
       changeElement.classList.add(change >= 0 ? "green" : "red");
 
+
+      //Flash
+  const isPositive = change >= 0;
+  changeElement.classList.add(isPositive ? "green flash-green" : "red flash-red");
+
+  changeElement.style.backgroundColor = isPositive ? '#4caf50' : '#f44336'; // Force inline
+changeElement.style.color = 'white';
+
+setTimeout(() => {
+  changeElement.style.backgroundColor = 'transparent';
+  changeElement.style.color = ''; // Reset
+}, 1000);
       // ✅ Add candle to chart
       // Proper 1-minute candle aggregation
       const lastCandle = candles[candles.length - 1];

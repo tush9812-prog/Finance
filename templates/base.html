@@ -113,8 +113,13 @@
                   <td><a href="/stock/{{ stock.Symbol }}">{{ stock.Symbol }}</a></td>
                   <td>{{ stock.Name }}</td>
                   <td>{{ stock.Price }}</td>
-                  <td>{{ stock.Change }}</td>
-                  <td>{{ stock["Change %"] }}</td>
+                  <td class="{% if stock.Change|float > 0 %}green{% else %}red{% endif %}">
+                    {{ stock.Change }}
+                  </td>
+                  <td class="{% if (stock['Change %']|float > 0) %}green{% else %}red{% endif %}">
+                    {{ stock['Change %'] }}
+                  </td>
+                
                   <td>{{ stock.Volume }}</td>
                   <td>{{ stock.Avg_Volume }}</td>
                 </tr>

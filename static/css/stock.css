@@ -1,10 +1,38 @@
-canvas + div {
-  display: none;
+body:has(.stock-page) {
+  overflow-y: auto !important;
+  /* Page scroll if needed */
+  height: auto !important;
 }
 
-.stock-page {
-  width: 60vw;
+body:has(.stock-page) .main-body,
+body:has(.stock-page) .main-body-content {
+  height: auto !important;
+  max-height: 1600px !important;
+  /* Cap here */
+  overflow-y: auto !important;
+}
+
+/* body:has(.stock-page) {
+  overflow-y: auto !important;
+  /* Enable scroll */
+height: auto !important;
+/* Unconstrain */
+}
+
+body:has(.stock-page) .main-body-content {
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+*/ .stock-page {
+
   margin: 10px;
+  width: 100%;
+  /* Full main-body-content */
+  max-height: 1520px;
+  /* Override base constraint */
+  max-width: 800px;
 }
 
 .stock-header-top {
@@ -19,8 +47,10 @@ canvas + div {
 }
 
 .stock-header-hr {
-  border: none; /* remove default border */
-  height: 2px; /* thickness */
+  border: none;
+  /* remove default border */
+  height: 2px;
+  /* thickness */
   background-color: #2a2e39;
   position: relative;
   top: -4px;
@@ -30,28 +60,77 @@ canvas + div {
 .stock-price {
   font-size: 28px;
   font-weight: 900;
+  margin-right: 8px;
 }
 
 .stock-price-change {
+  background: transparent !important;
+  transition: background-color 0.3s ease, transform 0.3s ease;
   font-size: 18px;
   font-weight: 900;
 }
 
+.flash-green {
+  animation: priceFlash 1s ease-out forwards !important;
+  background-color: #4caf50 !important;
+  /* Solid green */
+  color: white !important;
+}
+
+.flash-red {
+  animation: priceFlash 1s ease-out forwards !important;
+  background-color: #f44336 !important;
+  /* Solid red */
+  color: white !important;
+}
+
+@keyframes priceFlash {
+  0% {
+    background-color: #4caf50 !important;
+    /* Start solid */
+    transform: scale(1.02);
+  }
+
+  100% {
+    background-color: transparent !important;
+    transform: scale(1);
+  }
+}
+
+.stock-price-change {
+  transition: all 0.3s ease;
+}
+
 .stock-chart {
+  flex-grow: 2;
   margin-top: 14px;
   border: 2px solid #2a2e39;
   padding: 8px;
+  min-height: 500px;
+  max-height: 700px;
 }
+
+#tradingview_chart {
+  width: 100% !important;
+  height: 100% !important;
+  /* Chart fills container */
+}
+
 .stats {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px; /* spacing between items */
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  /* spacing between items */
   margin-top: 40px;
+  flex-grow: 1;
+  /* 1/3 space */
+  max-height: 600px;
 }
 
 .stats-row {
   display: flex;
-  justify-content: space-between; /* pushes spans apart */
+  justify-content: space-between;
+  /* pushes spans apart */
   align-items: center;
   width: 100%;
 }
@@ -76,6 +155,7 @@ canvas + div {
   background: #0d141c;
   margin-top: 20px;
   overflow: hidden;
+  max-height: 440px;
 }
 
 /* Header */
