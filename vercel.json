@@ -1,13 +1,9 @@
 {
   "version": 2,
-  "functions": {
-    "app.py": {
-      "runtime": "@vercel/python@3.12",
-      "maxDuration": 30,
-      "installCommand": "pip install --no-cache-dir -r requirements.txt"
-    }
-  },
   "routes": [
-    {"src": "/(.*)", "dest": "app.py"}
+    {
+      "src": "/(.*)",
+      "dest": "app.py"
+    }
   ]
 }
