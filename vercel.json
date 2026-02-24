@@ -1,19 +1,13 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "app.py",
-      "use": "@vercel/python",
-      "config": {
-        "installCommand": "pip install --no-cache-dir --force-reinstall -r requirements.txt",
-        "buildCommand": "pip install --no-cache-dir --force-reinstall -r requirements.txt"
-      }
-    }
-  ],
-  "routes": [{ "src": "/(.*)", "dest": "app.py" }],
   "functions": {
     "app.py": {
-      "maxDuration": 30
+      "runtime": "@vercel/python@3.12",
+      "maxDuration": 30,
+      "installCommand": "pip install --no-cache-dir -r requirements.txt"
     }
-  }
+  },
+  "routes": [
+    {"src": "/(.*)", "dest": "app.py"}
+  ]
 }
