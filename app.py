@@ -3,21 +3,23 @@ from stockapi import stock_get, stock_search, stock_indices
 from flask_socketio import SocketIO, emit
 from stockstrending import stocks_trending
 from webSocketForPriceStream import stock_webSocket
-import yfinance as yf
 from datetime import datetime, timezone
-from common.helperFunctions import get_sidebar_news, countries
+from service import get_sidebar_news, countries
 from common.topGainers import fetch_stocks_cached
 import time
-
+from flask_caching import Cache
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*", async_mode="threading")
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 
+cache = Cache(app, config={"CACHE_TYPE": "simple"})
+
+
+@cache.cached(timeout=1800, query_string=True)
 @app.route("/stock/<symbol>")
 def get_single_stock_price(symbol):
     stock = stock_get(symbol)
-    print("Stock data:", stock["details"].get("info")["symbol"])
     news, news_country, total_news, news_page = get_sidebar_news()
     return render_template(
         "stock.html",
@@ -32,6 +34,7 @@ def get_single_stock_price(symbol):
     )
 
 
+@cache.cached(timeout=1800, query_string=True)
 @app.route("/api/search/<symbol>", methods=["GET"])
 def search_stock(symbol):
     results = stock_search(symbol)
@@ -39,6 +42,7 @@ def search_stock(symbol):
     # return jsonify({"symbol": symbol, "results": results})
 
 
+@cache.cached(timeout=1800, query_string=True)
 @app.route("/api/news")
 def api_news():
     news, news_country, total_news, news_page = get_sidebar_news()
@@ -53,6 +57,7 @@ def api_news():
     )
 
 
+@cache.cached(timeout=1800, query_string=True)
 @app.route("/")
 def index():
 
@@ -68,6 +73,7 @@ def index():
     )
 
 
+@cache.cached(timeout=1800, query_string=True)
 @app.route("/api/top-gainers/<market>", methods=["GET"])
 def top_gainers(market: str):
     """Flask API endpoint for dropdown selection."""
@@ -84,12 +90,14 @@ def top_gainers(market: str):
     )
 
 
+@cache.cached(timeout=1800, query_string=True)
 @socketio.on("subscribe")
 def handle_subscribe(data):
     print("data incomi", data)
     stock_webSocket(data, socketio)
 
 
+@cache.cached(timeout=1800, query_string=True)
 @socketio.on("connect")
 def handle_connect():
     emit("status", {"msg": "Connected to live prices"})

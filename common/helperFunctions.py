@@ -1,34 +1,26 @@
 from flask import request, jsonify
-from stockapi import stock_search
+from curl_cffi import requests
 
-countries = ["India 🇮🇳", "United States 🇺🇸", "China 🇨🇳", "Japan 🇯🇵", "Germany 🇩🇪"]
+import random
+
+# Modern browser headers (rotates)
+USER_AGENTS = [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15",
+]
 
 
-def get_sidebar_news():
-    news_country = request.args.get("news_country") or countries[0]
-    news_page = int(request.args.get("news_page", 0))
-    news_per_page = 2
-
-    info = stock_search(news_country)
-    news = list(info["news"])
-
-    total_news = len(news)
-    if total_news == 0:
-        return jsonify({"news": [], "total": 0})
-
-    max_page = (total_news - 1) // news_per_page
-
-    # 🔥 Wrap-around logic
-    if news_page < 0:
-        news_page = max_page
-    elif news_page > max_page:
-        news_page = 0
-    if news_page > max_page:
-        news_page = news_page - max_page
-    # print("news page", news_page, max_page)
-    start = news_page * news_per_page
-    end = start + news_per_page
-    # print("start", start, end)
-    sliced_news = news[start:end]
-
-    return sliced_news, news_country, total_news, news_page
+def get_session():
+    session = requests.Session(impersonate="chrome124")
+    session.headers.update(
+        {
+            "User-Agent": random.choice(USER_AGENTS),
+            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+            "Accept-Language": "en-US,en;q=0.5",
+            "Accept-Encoding": "gzip, deflate",
+            "Connection": "keep-alive",
+            "Upgrade-Insecure-Requests": "1",
+        }
+    )
+    return session

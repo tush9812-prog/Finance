@@ -1,11 +1,12 @@
 import yfinance as yf
 import time
+from common.helperFunctions import get_session
 
 
 def stock_get(stock, period="max", interval="1d"):
     try:
-        time.sleep(2)
-        ticker = yf.Ticker(stock)
+        session = get_session()
+        ticker = yf.Ticker(stock, session=session)
         if ticker.info.get("quoteType") == "EQUITY":
             history = ticker.history(period=period, interval=interval)
             if history is None or history.empty:
@@ -29,6 +30,7 @@ def stock_get(stock, period="max", interval="1d"):
                 "low": history["Low"].tolist(),
                 "close": history["Close"].tolist(),
             }
+            print("Stock data:", details["info"]["symbol"])
             return {"details": details, "chart_data": chart_data}
         search = stock_search(stock)
         print("Search results:", search)
@@ -66,9 +68,9 @@ def stock_get(stock, period="max", interval="1d"):
 
 def stock_search(symbol):
     # print("Searching for:", symbol)
-    time.sleep(2)
+    session = get_session()
 
-    results = yf.Search(symbol)
+    results = yf.Search(symbol, session=session)
     # print("results:", results.quotes)
     results = {
         "quotes": results.quotes,
@@ -115,9 +117,8 @@ def stock_indices():
             "Euronext 100",
         ],
     }
-    time.sleep(2)
-
-    us = yf.Market("ASIA")
+    session = get_session()
+    us = yf.Market("ASIA", session=session)
     print("US Market Status:", us.status)  # Dict: open/high/low
     print("US Summary:", us.summary)  # DataFrame preview
     # print("US Overview:", us.overview)
