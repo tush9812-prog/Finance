@@ -1,5 +1,4 @@
 from flask import request, jsonify
-from curl_cffi import requests
 
 import random
 
