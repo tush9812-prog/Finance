@@ -5,19 +5,10 @@
       "src": "app.py",
       "use": "@vercel/python",
       "config": {
-        "buildCommand": "pip install -r requirements.txt",
-        "installCommand": "pip install -r requirements.txt"
+        "installCommand": "pip install --no-cache-dir --force-reinstall -r requirements.txt",
+        "buildCommand": "pip install --no-cache-dir --force-reinstall -r requirements.txt"
       }
     }
   ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "app.py"
-    },
-    {
-      "src": "/socket.io/(.*)",
-      "dest": "/app.py"
-    }
-  ]
+  "routes": [{"src": "/(.*)", "dest": "app.py"}]
 }
