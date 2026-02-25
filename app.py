@@ -110,6 +110,12 @@ def datetimeformat(value):
     return datetime.fromtimestamp(value, timezone.utc).strftime("%b %d, %Y")
 
 
+@app.route("/health", methods=["GET"])  # Or '/ping'
+def health():
+    print("Health check at", datetime.now())
+    return "", 200
+
+
 if __name__ == "__main__":
     # socketio.run(app, debug=True, port=4000)
     socketio.run(app, debug=True, port=4000)

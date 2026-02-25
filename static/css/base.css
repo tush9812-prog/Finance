@@ -299,7 +299,7 @@ li {
   border: 1px solid #303030;
   border-radius: 24px;
   padding: 4px;
-  height: 34px;
+  height: 40px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
@@ -317,6 +317,7 @@ li {
   padding: 8px 16px;
   outline: none;
   caret-color: #00c851;
+  height: 40px;
 }
 
 .search-btn {
@@ -708,20 +709,13 @@ main {
 }
 
 [data-theme="light"] {
-  --bg-primary: #ffffff;
-  --bg-secondary: #f8f9fa;
+  --bg-primary: #ffffff !important;
+  --bg-secondary: #f8f9fa !important;
   --text-primary: #000000;
   --text-secondary: #666666;
-  --search-bg: #ffffff;
+  --search-bg: #ffffff !important;
 
-  .sun-icon {
-    color: rgb(208, 246, 18);
-    /* Bright lime ✓ */
-    filter: drop-shadow(0 0 4px rgb(208, 246, 18));
-    /* Glow effect */
-    transform: scale(1.8);
-    /* 10% bigger */
-  }
+
 
   .theme-toggle-btn {
     color: yellow;
@@ -733,6 +727,24 @@ main {
   }
 }
 
+.moon-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: url("/static/images/moon.jpeg") center/cover no-repeat;
+  filter: drop-shadow(0 0 6px rgba(200, 210, 255, 0.6));
+}
+
+
+
+
+
+
+
+.moon-icon :hover {
+  transform: scale(1.6);
+}
+
 [data-theme="dark"] {
   --bg-primary: #121212;
   --bg-secondary: #1e1e1e;
@@ -742,6 +754,15 @@ main {
 
   .title-later {
     color: white;
+  }
+
+  .sun-icon {
+    color: rgb(208, 246, 18);
+    /* Bright lime ✓ */
+    filter: drop-shadow(0 0 4px rgb(208, 246, 18));
+    /* Glow effect */
+    transform: scale(1.8);
+    /* 10% bigger */
   }
 }
 
@@ -782,7 +803,7 @@ body {
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
-  color: rgb(240, 186, 186);
+  color: rgb(240, 186, 186) !important;
 }
 
 .theme-toggle-btn:hover {
@@ -796,19 +817,21 @@ body {
   transition: opacity 0.3s ease;
 }
 
-.sun-icon {
-  opacity: 1;
-}
+
 
 .moon-icon {
-  opacity: 0;
+  opacity: 1;
   position: absolute;
 }
 
-[data-theme="dark"] .sun-icon {
+[data-theme="dark"] .moon-icon {
   opacity: 0;
 }
 
-[data-theme="dark"] .moon-icon {
+[data-theme="dark"] .sun-icon {
   opacity: 1;
+}
+
+[data-theme="light"] .sun-icon {
+  opacity: 0;
 }
