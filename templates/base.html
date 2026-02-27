@@ -94,6 +94,19 @@
         <div class="main-body">
           <div class="main-body-content">
             {% if show_table %}
+            <div class="most-active">
+              <div class="most-active-header">
+
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="#00C851">
+                      <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
+                  </svg>
+                  <div>
+                    <h2>Most Active
+                    </h2>
+                  </div>
+              
+              </div>
+             
             <div class="table-container">
               <table class="stock-table">
                 <thead class="table-head">
@@ -108,7 +121,7 @@
                   </tr>
                 </thead>
                 {% for stock in trending_stocks %}
-                <tr>
+                <tr id = "{{ stock.Symbol }}">
                   <td><a href="/stock/{{ stock.Symbol }}">{{ stock.Symbol }}</a></td>
                   <td>{{ stock.Name }}</td>
                   <td>{{ stock.Price }}</td>
@@ -124,7 +137,9 @@
                 </tr>
                 {% endfor %}
               </table>
+            
             </div>
+          </div>
       
             {% endif %}
       
@@ -184,6 +199,7 @@
   </div>
   <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
   <script>
+    const subscribedSymbols = new Set();
     (function() {
       const html = document.documentElement;
       html.style.colorScheme = 'dark';  // Force browser dark
@@ -223,6 +239,9 @@
     let currentNewsPage = 0;
     let totalNewsItems = 0;
     const newsPerPage = 2;
+    const socket = io({
+  transports: ["websocket"],
+});
     document.addEventListener('DOMContentLoaded', () => {
       const country = document.getElementById('news_country')?.value
       loadNews(country, currentNewsPage);
@@ -249,6 +268,27 @@
 
       updateDateTime();
       setInterval(updateDateTime, 1000);
+
+      const trendingStocks = {{ trending_stocks | default ([]) | tojson
+    }};
+        trendingStocks.forEach(stock => {
+          if (stock.Symbol) {
+            if (!subscribedSymbols.has(stock.Symbol)) {
+              socket.emit("subscribe", { symbol: stock.Symbol });
+              subscribedSymbols.add(stock.Symbol);
+            }
+          }
+        });
+        socket.on("price_update", (data) => {
+          const stockData = trendingStocks.find(
+            s => s.Symbol === data.symbol
+          );
+
+          if (!stockData || !stockData.Prev_Close) return;
+          const row = document.getElementById(data.symbol);
+          row.cells[2].textContent = data.price; // Price cell
+
+        })
     })
     function loadNews(country, page) {
 
@@ -322,7 +362,7 @@
     });
 }
 
-// Auto-load on page
+// Top Gainers : Auto-load on page
 document.addEventListener('DOMContentLoaded', loadTopGainers);
 
     function changeNewsCountry() {

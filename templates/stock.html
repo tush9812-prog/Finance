@@ -311,7 +311,7 @@
 </div>
 {% endblock %} {% block scripts %}
 <!-- TradingView Lightweight Charts -->
- <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 <!-- Fixed: Standalone JS (no separate CSS file exists) -->
 <script src="https://unpkg.com/lightweight-charts@4.1.7/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
@@ -320,7 +320,9 @@
   document.addEventListener('DOMContentLoaded', () => {
 
     let currentCandle = null;
-    const socket = io();
+    const socket = io({
+  transports: ["websocket"],
+});
     const container = document.getElementById("tradingview_chart");
 
     const chartData = JSON.parse('{{ stock.chart_data | tojson | safe }}');
@@ -379,17 +381,18 @@
         height: container.offsetHeight || 500
       });
     });
+    // NEW: Cleanup function
 
     // Cache previousClose once outside socket handler:
     const previousClose = Number("{{ stock.details.info.get('regularMarketPreviousClose', 0) }}");
-    socket.emit("subscribe", {
-      symbol: "{{ symbol }}"
-    });
+    if (!subscribedSymbols.has("{{ symbol }}")) {
+  socket.emit("subscribe", { symbol: "{{ symbol }}" });
+  subscribedSymbols.add( "{{ symbol }}");
+}
     socket.on("price_update", (data) => {
       if (!data.price) return;
 
       const livePriceElement = document.getElementById("live-price");
-      const changeElement = document.getElementById("live-change");
 
       const newPrice = Number(data.price);
 
@@ -399,31 +402,8 @@
       const previousClose = Number(
         "{{ stock.details.info.get('regularMarketPreviousClose', 0) }}"
       );
-      // ✅ Calculate change
-      const change = newPrice - previousClose;
-      const changePercent = previousClose
-        ? (change / previousClose) * 100
-        : 0;
-
-      changeElement.textContent =
-        change.toFixed(2) + " (" + changePercent.toFixed(2) + "%)";
-
-
-      changeElement.classList.remove("green", "red");
-      changeElement.classList.add(change >= 0 ? "green" : "red");
-
-
-      //Flash
-  const isPositive = change >= 0;
-  changeElement.classList.add(isPositive ? "green flash-green" : "red flash-red");
-
-  changeElement.style.backgroundColor = isPositive ? '#4caf50' : '#f44336'; // Force inline
-changeElement.style.color = 'white';
-
-setTimeout(() => {
-  changeElement.style.backgroundColor = 'transparent';
-  changeElement.style.color = ''; // Reset
-}, 1000);
+   
+   
       // ✅ Add candle to chart
       // Proper 1-minute candle aggregation
       const lastCandle = candles[candles.length - 1];

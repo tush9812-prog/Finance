@@ -63,7 +63,6 @@ def index():
 
     # Most active stocks
     trending_stocks = stocks_trending()
-
     # stock_indices()
     return render_template(
         "base.html",

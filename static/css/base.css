@@ -219,7 +219,9 @@ li {
 /* Nuclear option - ZERO space between spans */
 
 .no-space-span {
-  font-size: inherit;
+
+  font-weight: 900 !important;
+  font-size: 34px !important;
   word-spacing: -3px !important;
   /* Negative word spacing */
   letter-spacing: -1px !important;
@@ -456,6 +458,21 @@ main {
 
 /* Responsive table-container - scrollable under 620px */
 
+.most-active {
+  display: flex;
+  flex-direction: column;
+  /* 👈 Stack vertically */
+  align-items: center;
+  /* Optional: center content */
+}
+
+.most-active-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+}
+
 .table-container {
   width: 800px;
   /* Never exceed viewport */
@@ -465,9 +482,6 @@ main {
   background-color: #050505;
   border-left: 1px solid #141414;
   border: 1px solid #2a2e39;
-  position: relative;
-  top: 14px;
-  left: 8px;
   display: flex;
   align-items: center;
   /* Responsive behavior */
@@ -834,4 +848,12 @@ body {
 
 [data-theme="light"] .sun-icon {
   opacity: 0;
+}
+
+[data-theme="light"] .header-clock {
+  background: black;
+}
+
+[data-theme="light"] .stock-header-top {
+  color: black;
 }
