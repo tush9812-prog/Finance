@@ -1,4 +1,4 @@
-name: Keep Render Alive
+name: Ping
 
 on:
   schedule:
@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Render Health Endpoint
+      - name: Ping Health Endpoint
         run: |
           curl -f https://finance.tushargoel.in/health
