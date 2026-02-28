@@ -2,7 +2,8 @@ name: Ping
 
 on:
   schedule:
-    - cron: "*/3 * * * *"
+    - cron: "*/8 * * * *"
+    - cron: "4-59/8 * * * *"
   workflow_dispatch:
 
 jobs:
