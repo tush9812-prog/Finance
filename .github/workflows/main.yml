@@ -1,8 +1,8 @@
-name: Keep Render Alive
+name: Ping
 
 on:
   schedule:
-    - cron: "*/14 * * * *"   # Runs every 10 minutes
+    - cron: "*/3 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -10,6 +10,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Ping Render Health Endpoint
+      - name: Ping Health Endpoint
         run: |
-          curl -f https://finance.tushargoel.in/health
+          curl --max-time 60 -f https://finance.tushargoel.in/health
