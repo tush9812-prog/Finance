@@ -404,6 +404,8 @@ main {
 
 .main-body-content {
   width: calc(100vw - 320px);
+  min-width: 400px;
+  height: calc(100vh - 80px);
   /* Grow to fill */
   /* Remove padding squeeze */
   overflow: auto;
@@ -474,7 +476,9 @@ main {
 }
 
 .table-container {
-  width: 800px;
+  width: calc(100vw-80px);
+  min-width: 400px;
+  height: calc(100vw-40px);
   /* Never exceed viewport */
   overflow-y: auto;
   color: #e3e3e3;
@@ -484,6 +488,7 @@ main {
   border: 1px solid #2a2e39;
   display: flex;
   align-items: center;
+  flex-shrink: auto !important;
   /* Responsive behavior */
   /* Minimum height on mobile */
 }
@@ -492,7 +497,7 @@ main {
 @media (max-width: 948px) and (min-width: 625px) {
   .table-container {
     /* Full viewport width */
-    height: 100vh;
+    height: calc(100vw-120px);
     /* Full viewport height */
 
     border-radius: 0;
@@ -506,6 +511,7 @@ main {
 
     /* Sticky header on scroll */
     border-top: 1px solid #2a2e39;
+    flex-shrink: auto !important;
   }
 }
 
@@ -661,30 +667,61 @@ main {
   z-index: 1;
 }
 
-@media (max-width: 805px) {
+@media (max-width: 874px) {
   .news-divider {
     display: none !important;
   }
 
   .sidebar {
     display: none !important;
+    width: 0 !important;
   }
 
-  .stock-table {
-    width: 100% !important;
-    /* Fill container */
-    min-width: 480px !important;
-    /* Force horizontal scroll */
-    table-layout: fixed;
-    /* Prevent column shrinking */
+  .main-body-content {
+    width: 100vw !important;
+    height: 100vh !important;
+    /* Full viewport */
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    padding-bottom: 140px !important;
+    /* Enable scroll */
+
+    /* Firefox: Hide scrollbar completely */
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    /* Edge/IE */
+
+    /* WebKit (Chrome/Safari/Edge): Hide scrollbar */
+    scrollbar-gutter: stable !important;
+    /* Reserves space */
   }
 
-  /* Column flexibility */
-  .stock-table th,
-  .stock-table td {
-    min-width: 80px;
-    /* Minimum column size */
+  .main-body-content::-webkit-scrollbar {
+    display: none !important;
+    /* Chrome/Safari */
   }
+
+  .no-space-span {
+
+    font-weight: 400 !important;
+    font-size: 18px !important;
+
+  }
+
+  .most-active-header {
+    display: none !important;
+  }
+
+  .bar-header {
+    display: flex;
+    flex-direction: row;
+    height: 48px;
+    width: 100%;
+    align-items: center;
+    gap: 4px;
+  }
+
+
 }
 
 .predictor {
@@ -795,6 +832,7 @@ body {
 }
 
 .search-container input {
+  width: 20% !important;
   background-color: var(--search-bg);
 }
 
