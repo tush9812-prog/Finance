@@ -1,0 +1,15 @@
+{% extends "base.html" %} {% block title %}{{ symbol }} - Live Chart{% endblock
+%} {% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stock.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/handle.css') }}" />
+{% endblock %} {% block content %}
+<div class="error-container">
+  <div class="error-icon">⚠️</div>
+  <h1 class="error-code">Oops! Error</h1>
+  <p class="error-message">{{ error or 'Something went wrong while fetching stock data.' }}</p>
+  <a href="{{ url_for('index') }}" class="btn-back">← Back to Home</a>
+</div>
+
+
+{% endblock %}

@@ -19,19 +19,33 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 @cache.cached(timeout=1800, query_string=True)
 @app.route("/stock/<symbol>")
 def get_single_stock_price(symbol):
-    stock = stock_get(symbol)
-    news, news_country, total_news, news_page = get_sidebar_news()
-    return render_template(
-        "stock.html",
-        countries=countries,
-        news=news,
-        total=total_news,
-        page=news_page,
-        news_country=news_country,
-        symbol=stock["details"].get("info")["symbol"],
-        stock=stock,
-        show_table=False,
-    )
+    try:
+        stock = stock_get(symbol)
+        news, news_country, total_news, news_page = get_sidebar_news()
+        return render_template(
+            "stock.html",
+            countries=countries,
+            news=news,
+            total=total_news,
+            page=news_page,
+            news_country=news_country,
+            symbol=stock["details"].get("info")["symbol"],
+            stock=stock,
+            show_table=False,
+        )
+    except Exception as e:
+        print("Error rendering stock page:", e)
+        return render_template(
+            "handle.html",
+            countries=countries,
+            news=[],
+            total=0,
+            page=1,
+            news_country=None,
+            symbol=symbol,
+            stock=None,
+            show_table=False,
+        )
 
 
 @cache.cached(timeout=1800, query_string=True)

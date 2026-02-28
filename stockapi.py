@@ -33,7 +33,6 @@ def stock_get(stock, period="max", interval="1d"):
             print("Stock data:", details["info"]["symbol"])
             return {"details": details, "chart_data": chart_data}
         search = stock_search(stock)
-        print("Search results:", search)
         if search["quotes"]:
             best_match = search["quotes"][0]
             return stock_get(best_match.get("symbol", stock), period, interval)
