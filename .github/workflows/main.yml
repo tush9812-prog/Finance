@@ -2,7 +2,7 @@ name: Ping
 
 on:
   schedule:
-    - cron: "*/14 * * * *"   # Runs every 10 minutes
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
@@ -12,4 +12,4 @@ jobs:
     steps:
       - name: Ping Health Endpoint
         run: |
-          curl -f https://finance.tushargoel.in/health
+          curl --max-time 60 -f https://finance.tushargoel.in/health
