@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit
 from stockstrending import stocks_trending
 from webSocketForPriceStream import stock_webSocket
 from datetime import datetime, timezone
-from service import get_sidebar_news, countries
+from service import get_sidebar_news, countries, wrapper_sidebar_news
 from common.topGainers import fetch_stocks_cached
 import time
 from flask_caching import Cache
@@ -21,7 +21,11 @@ cache = Cache(app, config={"CACHE_TYPE": "simple"})
 def get_single_stock_price(symbol):
     try:
         stock = stock_get(symbol)
-        news, news_country, total_news, news_page = get_sidebar_news()
+        wrapper_news = wrapper_sidebar_news()
+        if wrapper_news is None:
+            news, news_country, total_news, news_page = {}, "", 0, 0
+        else:
+            news, news_country, total_news, news_page = wrapper_news
         return render_template(
             "stock.html",
             countries=countries,
@@ -59,7 +63,11 @@ def search_stock(symbol):
 @cache.cached(timeout=1800, query_string=True)
 @app.route("/api/news")
 def api_news():
-    news, news_country, total_news, news_page = get_sidebar_news()
+    wrapper_news = wrapper_sidebar_news()
+    if wrapper_news is None:
+        news, news_country, total_news, news_page = {}, "", 0, 0
+    else:
+        news, news_country, total_news, news_page = wrapper_news
 
     return jsonify(
         {

@@ -198,8 +198,7 @@
       updateDateTime();
       setInterval(updateDateTime, 1000);
 
-      const trendingStocks = {{ trending_stocks | default ([]) | tojson
-    }};
+     const trendingStocks = JSON.parse('{{ trending_stocks | default([]) | tojson | safe }}');
         trendingStocks.forEach(stock => {
           if (stock.Symbol) {
             if (!subscribedSymbols.has(stock.Symbol)) {
@@ -212,10 +211,12 @@
           const stockData = trendingStocks.find(
             s => s.Symbol === data.symbol
           );
-
-          if (!stockData || !stockData.Prev_Close) return;
+        
+          if (!stockData) return;
           const row = document.getElementById(data.symbol);
-          row.cells[2].textContent = data.price; // Price cell
+
+          const price = Number(data.price);
+          row.cells[2].textContent = price; // Price cell
 
         })
     })

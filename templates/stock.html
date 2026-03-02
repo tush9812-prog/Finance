@@ -321,8 +321,8 @@
 
     let currentCandle = null;
     const socket = io({
-  transports: ["websocket"],
-});
+      transports: ["websocket"],
+    });
     const container = document.getElementById("tradingview_chart");
 
     const chartData = JSON.parse('{{ stock.chart_data | tojson | safe }}');
@@ -386,9 +386,9 @@
     // Cache previousClose once outside socket handler:
     const previousClose = Number("{{ stock.details.info.get('regularMarketPreviousClose', 0) }}");
     if (!subscribedSymbols.has("{{ symbol }}")) {
-  socket.emit("subscribe", { symbol: "{{ symbol }}" });
-  subscribedSymbols.add( "{{ symbol }}");
-}
+      socket.emit("subscribe", { symbol: "{{ symbol }}" });
+      subscribedSymbols.add("{{ symbol }}");
+    }
     socket.on("price_update", (data) => {
       if (!data.price) return;
 
@@ -402,8 +402,17 @@
       const previousClose = Number(
         "{{ stock.details.info.get('regularMarketPreviousClose', 0) }}"
       );
-   
-   
+
+      const chaneElement = document.getElementById("live-change");
+      if (previousClose) {
+        const change = newPrice - previousClose;
+        const changePct = (change / previousClose) * 100;
+
+        chaneElement.textContent = `${change.toFixed(2)} (${changePct.toFixed(2)}%)`;
+        chaneElement.className = `stock-price-change ${change > 0 ? "green" : "red"
+          }`;
+      }
+
       // ✅ Add candle to chart
       // Proper 1-minute candle aggregation
       const lastCandle = candles[candles.length - 1];

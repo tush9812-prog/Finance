@@ -6,7 +6,6 @@ import time
 
 def stock_webSocket(data, socketio: SocketIO):
     symbol = data.get("symbol")
-    print(f"Streaming: {symbol}")
 
     if symbol:
         join_room(symbol)
@@ -27,7 +26,7 @@ def stock_webSocket(data, socketio: SocketIO):
                 ws.subscribe(symbol)
                 ws.listen(message_handler)  # Now runs forever
             except Exception as e:
-                print(f"WS error: {e}")
+                print(f"WS error: {e}", symbol)
 
         # ✅ THREAD IT - non-blocking!
         Thread(target=start_stream, daemon=True).start()

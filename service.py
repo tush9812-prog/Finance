@@ -3,10 +3,27 @@ from stockapi import stock_search
 
 countries = ["India 🇮🇳", "United States 🇺🇸", "China 🇨🇳", "Japan 🇯🇵", "Germany 🇩🇪"]
 
+countries_fallback_count = 0
 
-def get_sidebar_news():
-    news_country = request.args.get("news_country") or countries[0]
-    news_page = int(request.args.get("news_page", 0))
+
+def wrapper_sidebar_news(country=countries[0]):
+    global countries_fallback_count
+    try:
+        countries_fallback_count += 1
+        country = request.args.get("news_country") or country
+        news_page = int(request.args.get("news_page", 0))
+        if countries_fallback_count > 10:
+            return None
+        return get_sidebar_news(country, news_page)
+    except Exception as e:
+        if country == countries[4]:
+            return None
+        else:
+            return wrapper_sidebar_news(country=countries[countries.index(country) + 1])
+
+
+def get_sidebar_news(news_country=countries[0], news_page=0):
+
     news_per_page = 2
 
     info = stock_search(news_country)
